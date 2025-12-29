@@ -7,8 +7,13 @@
       "@/*": [
         "src/*"
       ],
-      "@assets/*": ["assets/*"]
-    }
+      "@assets/*": [
+        "assets/*"
+      ]
+    },
+    "types": [
+      "nativewind/types"
+    ]
   },
   "include": [
     "**/*.ts",
