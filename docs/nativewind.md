@@ -18,7 +18,7 @@ A `tailwind.config.js` file was created in the root directory:
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   // NOTE: Update this to include the paths to all of your component files.
-  content: ["./src/app/**/*.{js,jsx,ts,tsx}", "./src/components/**/*.{js,jsx,ts,tsx}"],
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
   theme: {
     extend: {},
@@ -35,16 +35,31 @@ The `nativewind/babel` plugin was added to `babel.config.js`:
 module.exports = function (api) {
   api.cache(true);
   return {
-    presets: ["babel-preset-expo"],
-    plugins: [
-      // ... other plugins
+    presets: [
+      ["babel-preset-expo", { jsxImportSource: "nativewind" }],
       "nativewind/babel",
+    ],
+    plugins: [
+      "react-native-reanimated/plugin",
     ]
   };
 };
 ```
 
-## 4. CSS Setup
+## 4. Metro Configuration
+
+For NativeWind v4, you must wrap your Metro configuration in `metro.config.js`:
+
+```javascript
+const { getDefaultConfig } = require("expo/metro-config");
+const { withNativeWind } = require("nativewind/metro");
+
+const config = getDefaultConfig(__dirname);
+
+module.exports = withNativeWind(config, { input: "./global.css" });
+```
+
+## 5. CSS Setup
 
 A `global.css` file was created in the root directory to include Tailwind directives:
 
@@ -54,7 +69,7 @@ A `global.css` file was created in the root directory to include Tailwind direct
 @tailwind utilities;
 ```
 
-## 5. Root Layout Integration
+## 6. Root Layout Integration
 
 The `global.css` file is imported in the root layout file `src/app/_layout.tsx`:
 
@@ -64,7 +79,21 @@ import '../../global.css';
 // ... rest of the layout
 ```
 
-## 6. Usage
+## 7. TypeScript Setup (Optional)
+
+NativeWind will automatically generate a `nativewind-env.d.ts` file. Ensure it is included in your `tsconfig.json`:
+
+```json
+{
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "nativewind-env.d.ts"
+  ]
+}
+```
+
+## 8. Usage
 
 You can now use Tailwind CSS classes in your React Native components:
 
