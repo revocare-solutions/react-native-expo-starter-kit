@@ -2,6 +2,10 @@
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
+## Features
+
+- **NativeWind v4**: Styled with Tailwind CSS for React Native. [View integration guide](docs/nativewind.md)
+
 ## Get started
 
 1. Install dependencies
