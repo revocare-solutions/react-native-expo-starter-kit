@@ -1,54 +1,68 @@
-# Welcome to your Expo app 👋
+# React Native Expo Starter Kit
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A production-ready React Native starter kit built on Expo SDK 54. Every feature is **plug-and-play** with swappable providers, feature toggles, and clean service interfaces -- enable only what you need, swap implementations without touching application code.
 
-## Features
+## Feature Matrix
 
-- **NativeWind v4**: Styled with Tailwind CSS for React Native. [View integration guide](docs/nativewind.md)
+| Feature | Status | Default Provider | Swappable | Doc |
+| --- | --- | --- | --- | --- |
+| Offline Storage | Done | MMKV | Yes | [docs](docs/features/offline-storage.md) |
+| State Management | Done | Zustand + MMKV | -- | [docs](docs/features/state-management.md) |
+| API Layer | Done | Axios + TanStack Query | -- | [docs](docs/architecture.md) |
+| Testing | Done | Jest + RNTL | -- | [docs](docs/getting-started.md#testing) |
+| NativeWind | Done | NativeWind v4 | -- | [docs](docs/nativewind.md) |
+| Auth | Coming soon | Amplify | Yes | -- |
+| Forms | Coming soon | -- | -- | -- |
+| i18n | Coming soon | -- | -- | -- |
+| Analytics | Coming soon | Amplify | Yes | -- |
+| Crash Reporting | Coming soon | Sentry | Yes | -- |
+| Notifications | Coming soon | Amplify | Yes | -- |
+| Deep Linking | Coming soon | -- | -- | -- |
+| OTA Updates | Coming soon | -- | -- | -- |
+| Onboarding | Coming soon | -- | -- | -- |
+| Splash / App Icon | Coming soon | -- | -- | -- |
+| CI/CD | Coming soon | -- | -- | -- |
 
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Quick Start
 
 ```bash
-npm run reset-project
+# Clone
+git clone https://github.com/revocare-solutions/react-native-expo-starter-kit.git
+cd react-native-expo-starter-kit
+
+# Install
+pnpm install
+
+# Configure (enable/disable features, choose providers)
+# Edit src/config/starter.config.ts
+
+# Run
+pnpm start        # Expo dev server
+pnpm android      # Android emulator
+pnpm ios          # iOS simulator
+pnpm web          # Web browser
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Documentation
 
-## Learn more
+| Doc | Description |
+| --- | --- |
+| [Docs Hub](docs/README.md) | Index of all documentation |
+| [Getting Started](docs/getting-started.md) | Prerequisites, install, project structure |
+| [Architecture](docs/architecture.md) | Modular design, service interfaces, providers |
+| [Configuration](docs/configuration.md) | Feature toggles, environment variables |
 
-To learn more about developing your project with Expo, look at the following resources:
+## Tech Stack
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- **Framework** -- [Expo SDK 54](https://expo.dev) + React Native 0.81
+- **Routing** -- [Expo Router](https://docs.expo.dev/router/introduction/) (file-based)
+- **Styling** -- [NativeWind v4](https://www.nativewind.dev/) (Tailwind CSS for RN)
+- **State** -- [Zustand](https://github.com/pmndrs/zustand) (client) + [TanStack Query](https://tanstack.com/query) (server)
+- **Storage** -- [react-native-mmkv](https://github.com/mrousavy/react-native-mmkv)
+- **HTTP** -- [Axios](https://axios-http.com/)
+- **Testing** -- [Jest](https://jestjs.io/) + [React Native Testing Library](https://callstack.github.io/react-native-testing-library/)
+- **Language** -- TypeScript 5.9
 
-## Join the community
+## License
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+MIT
