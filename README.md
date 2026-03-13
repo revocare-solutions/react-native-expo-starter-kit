@@ -13,7 +13,7 @@ A production-ready React Native starter kit built on Expo SDK 54. Every feature 
 | NativeWind | Done | NativeWind v4 | -- | [docs](docs/nativewind.md) |
 | Auth | Done | Amplify | Yes | [docs](docs/features/auth.md) |
 | Forms | Done | React Hook Form + Zod | -- | [docs](docs/features/forms.md) |
-| i18n | Coming soon | -- | -- | -- |
+| i18n | Done | i18next | -- | [docs](docs/features/i18n.md) |
 | Analytics | Coming soon | Amplify | Yes | -- |
 | Crash Reporting | Coming soon | Sentry | Yes | -- |
 | Notifications | Coming soon | Amplify | Yes | -- |
