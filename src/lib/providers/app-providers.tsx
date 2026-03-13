@@ -8,6 +8,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { CrashReportingProvider } from '@/features/crash-reporting';
 import { AnalyticsProvider } from '@/features/analytics';
 import { I18nProvider } from '@/features/i18n';
+import { NotificationProvider } from '@/features/notifications';
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   const colorScheme = useColorScheme();
@@ -27,8 +28,9 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
             <AnalyticsProvider>
               <CrashReportingProvider>
                 <I18nProvider>
-                  {/* Notifications provider added here by future tasks */}
-                  {children}
+                  <NotificationProvider>
+                    {children}
+                  </NotificationProvider>
                 </I18nProvider>
               </CrashReportingProvider>
             </AnalyticsProvider>
