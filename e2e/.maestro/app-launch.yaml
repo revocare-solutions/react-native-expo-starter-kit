@@ -1,0 +1,4 @@
+appId: com.mycompany.myapp
+---
+- launchApp
+- assertVisible: "Home"
