@@ -5,6 +5,7 @@ import { StorageProvider } from '@/features/offline-storage';
 import { AuthProvider } from '@/features/auth';
 import { configureAmplify } from '@/lib/amplify/configure';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { I18nProvider } from '@/features/i18n';
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   const colorScheme = useColorScheme();
@@ -21,8 +22,11 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
       <QueryProvider>
         <StorageProvider>
           <AuthProvider>
-            {/* Analytics, CrashReporting, i18n, Notifications providers added here by Tasks 10-13 */}
-            {children}
+            {/* Analytics, CrashReporting providers added here by future tasks */}
+            <I18nProvider>
+              {/* Notifications provider added here by future tasks */}
+              {children}
+            </I18nProvider>
           </AuthProvider>
         </StorageProvider>
       </QueryProvider>

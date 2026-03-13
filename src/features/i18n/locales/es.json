@@ -1,0 +1,31 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Ocurri\u00f3 un error",
+    "retry": "Reintentar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "confirm": "Confirmar",
+    "back": "Atr\u00e1s",
+    "next": "Siguiente",
+    "done": "Listo"
+  },
+  "auth": {
+    "login": "Iniciar sesi\u00f3n",
+    "register": "Registrarse",
+    "logout": "Cerrar sesi\u00f3n",
+    "email": "Correo electr\u00f3nico",
+    "password": "Contrase\u00f1a",
+    "confirmPassword": "Confirmar contrase\u00f1a",
+    "forgotPassword": "\u00bfOlvidaste tu contrase\u00f1a?",
+    "resetPassword": "Restablecer contrase\u00f1a",
+    "verifyCode": "Verificar c\u00f3digo",
+    "noAccount": "\u00bfNo tienes una cuenta?",
+    "hasAccount": "\u00bfYa tienes una cuenta?"
+  },
+  "tabs": {
+    "home": "Inicio",
+    "explore": "Explorar"
+  }
+}
