@@ -77,9 +77,18 @@ import { useStorage } from '@/features/offline-storage';
 pnpm test            # run all tests
 pnpm test:watch      # watch mode
 pnpm test:coverage   # coverage report
+pnpm test:e2e        # run Maestro E2E tests
 ```
 
-The testing stack is Jest + React Native Testing Library. Test files live next to source code in `__tests__/` directories.
+The unit testing stack is Jest + React Native Testing Library. Test files live next to source code in `__tests__/` directories. E2E tests use Maestro and live in `e2e/.maestro/`.
+
+## Type Checking
+
+```bash
+pnpm typecheck
+```
+
+Runs `tsc --noEmit` to verify the entire project type-checks without emitting files.
 
 ## Linting
 
