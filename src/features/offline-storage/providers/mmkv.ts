@@ -1,12 +1,24 @@
-import { MMKV } from 'react-native-mmkv';
 import type { StorageService } from '@/services/storage.interface';
 import type { StorageValue } from '@/types';
 
-const storage = new MMKV({ id: 'app-storage' });
+function createMMKVInstance() {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { MMKV } = require('react-native-mmkv');
+  return new MMKV({ id: 'app-storage' });
+}
+
+let storage: ReturnType<typeof createMMKVInstance>;
+
+function getStorage() {
+  if (!storage) {
+    storage = createMMKVInstance();
+  }
+  return storage;
+}
 
 export const mmkvStorageService: StorageService = {
   get<T extends StorageValue>(key: string): T | null {
-    const value = storage.getString(key);
+    const value = getStorage().getString(key);
     if (value === undefined) return null;
     try {
       return JSON.parse(value) as T;
@@ -16,22 +28,22 @@ export const mmkvStorageService: StorageService = {
   },
 
   set<T extends StorageValue>(key: string, value: T): void {
-    storage.set(key, JSON.stringify(value));
+    getStorage().set(key, JSON.stringify(value));
   },
 
   delete(key: string): void {
-    storage.delete(key);
+    getStorage().delete(key);
   },
 
   contains(key: string): boolean {
-    return storage.contains(key);
+    return getStorage().contains(key);
   },
 
   clearAll(): void {
-    storage.clearAll();
+    getStorage().clearAll();
   },
 
   getAllKeys(): string[] {
-    return storage.getAllKeys();
+    return getStorage().getAllKeys();
   },
 };
