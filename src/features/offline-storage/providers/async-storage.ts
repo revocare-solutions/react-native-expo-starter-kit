@@ -8,8 +8,8 @@ let initialized = false;
 async function hydrate() {
   if (initialized) return;
   const keys = await AsyncStorage.getAllKeys();
-  const pairs = await AsyncStorage.multiGet(keys);
-  pairs.forEach(([key, value]) => {
+  const entries = await AsyncStorage.getMany(keys);
+  Object.entries(entries).forEach(([key, value]) => {
     if (value !== null) cache.set(key, value);
   });
   initialized = true;

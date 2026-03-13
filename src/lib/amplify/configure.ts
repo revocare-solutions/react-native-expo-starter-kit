@@ -29,13 +29,17 @@ export async function configureAmplify(): Promise<void> {
       return;
     }
 
+    const cognitoConfig: Record<string, string> = {
+      userPoolId,
+      userPoolClientId,
+    };
+    if (identityPoolId) {
+      cognitoConfig.identityPoolId = identityPoolId;
+    }
+
     Amplify.configure({
       Auth: {
-        Cognito: {
-          userPoolId,
-          userPoolClientId,
-          ...(identityPoolId ? { identityPoolId } : {}),
-        },
+        Cognito: cognitoConfig as { userPoolId: string; userPoolClientId: string; identityPoolId: string },
       },
     });
 

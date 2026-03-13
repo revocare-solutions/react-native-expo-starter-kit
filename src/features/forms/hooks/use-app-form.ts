@@ -1,20 +1,21 @@
-import { useForm, type UseFormProps, type FieldValues } from 'react-hook-form';
+import { useForm, type UseFormProps, type UseFormReturn, type FieldValues, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { ZodSchema } from 'zod';
+import type { ZodType, ZodTypeDef } from 'zod';
 import { starterConfig } from '@/config/starter.config';
 
 export function useAppForm<T extends FieldValues>(
-  schema: ZodSchema<T>,
+  schema: ZodType<T, ZodTypeDef, T>,
   options?: Omit<UseFormProps<T>, 'resolver'>,
-) {
+): UseFormReturn<T, unknown, T> {
   if (!starterConfig.features.forms.enabled) {
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    return useForm<T>(options);
+    return useForm<T>(options) as UseFormReturn<T, unknown, T>;
   }
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useForm<T>({
-    resolver: zodResolver(schema),
+    // @hookform/resolvers v5 types expect an internal Zod3Type that doesn't match zod v3's ZodType
+    resolver: zodResolver(schema as unknown as Parameters<typeof zodResolver>[0]) as unknown as Resolver<T>,
     ...options,
-  });
+  }) as UseFormReturn<T, unknown, T>;
 }
