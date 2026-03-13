@@ -2,6 +2,7 @@ import type { Config } from 'jest';
 
 const config: Config = {
   preset: 'jest-expo',
+  setupFiles: ['./test/jest-globals.ts'],
   setupFilesAfterEnv: ['./test/setup.ts'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
