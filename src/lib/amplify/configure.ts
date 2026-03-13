@@ -1,0 +1,49 @@
+import { starterConfig } from '@/config/starter.config';
+
+let configured = false;
+
+export async function configureAmplify(): Promise<void> {
+  if (configured) return;
+
+  const { features } = starterConfig;
+
+  const usesAmplify =
+    (features.auth.enabled && features.auth.provider === 'amplify') ||
+    (features.analytics.enabled && features.analytics.provider === 'amplify') ||
+    (features.notifications.enabled && features.notifications.provider === 'amplify');
+
+  if (!usesAmplify) return;
+
+  try {
+    const { Amplify } = await import('aws-amplify');
+
+    const userPoolId = process.env.EXPO_PUBLIC_COGNITO_USER_POOL_ID;
+    const userPoolClientId = process.env.EXPO_PUBLIC_COGNITO_CLIENT_ID;
+    const identityPoolId = process.env.EXPO_PUBLIC_COGNITO_IDENTITY_POOL_ID;
+
+    if (!userPoolId || !userPoolClientId) {
+      console.warn(
+        '[amplify] Missing EXPO_PUBLIC_COGNITO_USER_POOL_ID or EXPO_PUBLIC_COGNITO_CLIENT_ID. ' +
+          'Amplify auth will not work until these are set in your .env file.',
+      );
+      return;
+    }
+
+    Amplify.configure({
+      Auth: {
+        Cognito: {
+          userPoolId,
+          userPoolClientId,
+          ...(identityPoolId ? { identityPoolId } : {}),
+        },
+      },
+    });
+
+    configured = true;
+  } catch (error) {
+    console.warn(
+      '[amplify] Failed to configure Amplify:',
+      error instanceof Error ? error.message : error,
+    );
+  }
+}
