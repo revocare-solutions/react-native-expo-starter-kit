@@ -1,11 +1,42 @@
+import { View } from 'react-native';
 import { Image } from 'expo-image';
-import { Platform } from 'react-native';
+import { Link } from 'expo-router';
 
 import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { starterConfig } from '@/config/starter.config';
+
+function QuickStartStep({
+  number,
+  title,
+  children,
+}: {
+  number: string;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <ThemedView className="gap-1 mb-4">
+      <View className="flex-row items-center gap-2">
+        <View className="w-6 h-6 rounded-full bg-blue-500 items-center justify-center">
+          <ThemedText className="text-white text-xs font-bold">{number}</ThemedText>
+        </View>
+        <ThemedText type="subtitle">{title}</ThemedText>
+      </View>
+      <View className="ml-8">{children}</View>
+    </ThemedView>
+  );
+}
+
+function TechBadge({ label }: { label: string }) {
+  return (
+    <View className="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800">
+      <ThemedText className="text-xs font-semibold">{label}</ThemedText>
+    </View>
+  );
+}
 
 export default function HomeScreen() {
   return (
@@ -18,67 +49,85 @@ export default function HomeScreen() {
         />
       }>
       <ThemedView className="flex-row items-center gap-2">
-        <ThemedText type="title">Welcome!</ThemedText>
+        <ThemedText type="title">Starter Kit</ThemedText>
         <HelloWave />
       </ThemedView>
-      <ThemedView className="bg-blue-500 p-4 rounded-xl my-4">
-        <ThemedText className="text-white font-bold text-center">
-          NativeWind is now integrated! 🚀
-        </ThemedText>
-      </ThemedView>
-      <ThemedView className="gap-2 mb-2">
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView className="gap-2 mb-2">
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
+      <ThemedText>
+        A production-ready React Native starter built on Expo SDK 54. Every feature is plug-and-play
+        — enable what you need, swap providers without touching app code.
+      </ThemedText>
+
+      <View className="bg-blue-500 p-4 rounded-xl my-2">
+        <ThemedText className="text-white font-bold text-center text-base">
+          {starterConfig.app.name} — Ready to build
         </ThemedText>
-      </ThemedView>
+      </View>
+
       <ThemedView className="gap-2 mb-2">
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
+        <ThemedText type="subtitle">Tech Stack</ThemedText>
+        <View className="flex-row flex-wrap gap-2">
+          <TechBadge label="Expo SDK 54" />
+          <TechBadge label="React Native 0.81" />
+          <TechBadge label="TypeScript" />
+          <TechBadge label="NativeWind v4" />
+          <TechBadge label="expo-router" />
+          <TechBadge label="Zustand" />
+          <TechBadge label="TanStack Query" />
+          <TechBadge label="Axios" />
+          <TechBadge label="Jest" />
+        </View>
       </ThemedView>
+
+      <ThemedText type="subtitle" className="mt-2">
+        Quick Start
+      </ThemedText>
+
+      <QuickStartStep number="1" title="Configure">
+        <ThemedText>
+          Open{' '}
+          <ThemedText type="defaultSemiBold">src/config/starter.config.ts</ThemedText> and toggle
+          features, choose providers, and set your app name.
+        </ThemedText>
+      </QuickStartStep>
+
+      <QuickStartStep number="2" title="Environment">
+        <ThemedText>
+          Copy{' '}
+          <ThemedText type="defaultSemiBold">.env.example</ThemedText> to{' '}
+          <ThemedText type="defaultSemiBold">.env.local</ThemedText> and fill in your API keys for
+          enabled providers (Amplify, Sentry, etc).
+        </ThemedText>
+      </QuickStartStep>
+
+      <QuickStartStep number="3" title="Explore">
+        <ThemedText>
+          Tap the{' '}
+          <Link href="/(tabs)/explore">
+            <ThemedText type="link">Explore tab</ThemedText>
+          </Link>{' '}
+          to see all {Object.keys(starterConfig.features).length} features with their current
+          status and providers.
+        </ThemedText>
+      </QuickStartStep>
+
+      <QuickStartStep number="4" title="Build">
+        <ThemedText>
+          Start building your app. Each feature lives in{' '}
+          <ThemedText type="defaultSemiBold">src/features/</ThemedText> with hooks, providers, and
+          tests — all self-contained and ready to customize.
+        </ThemedText>
+      </QuickStartStep>
+
+      <View className="bg-gray-100 dark:bg-gray-800 p-4 rounded-xl mt-2">
+        <ThemedText className="text-sm text-center">
+          Check out the{' '}
+          <ThemedText type="defaultSemiBold" className="text-sm">
+            docs/
+          </ThemedText>{' '}
+          folder for guides on every feature, architecture decisions, and configuration reference.
+        </ThemedText>
+      </View>
     </ParallaxScrollView>
   );
 }
