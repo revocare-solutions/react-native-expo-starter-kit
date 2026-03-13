@@ -1,0 +1,8 @@
+appId: com.mycompany.myapp
+---
+- launchApp
+- assertVisible: "Home"
+- tapOn: "Explore"
+- assertVisible: "Explore"
+- tapOn: "Home"
+- assertVisible: "Home"

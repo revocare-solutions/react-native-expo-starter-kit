@@ -12,7 +12,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "maestro test e2e/.maestro/"
   },
   "dependencies": {
     "@aws-amplify/react-native": "^1.3.3",
