@@ -1,1 +1,2 @@
-import '@testing-library/react-native/extend-expect';
+// Jest setup file
+// Custom matchers and global test configuration can be added here
