@@ -4,6 +4,7 @@ import { QueryProvider } from '@/lib/api';
 import { StorageProvider } from '@/features/offline-storage';
 import { AuthProvider } from '@/features/auth';
 import { configureAmplify } from '@/lib/amplify/configure';
+import { starterConfig } from '@/config/starter.config';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { CrashReportingProvider } from '@/features/crash-reporting';
 import { AnalyticsProvider } from '@/features/analytics';
@@ -14,7 +15,15 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
   const colorScheme = useColorScheme();
 
   useEffect(() => {
-    configureAmplify();
+    const { auth, analytics, notifications } = starterConfig.features;
+    const usesAmplify =
+      auth.provider === 'amplify' ||
+      analytics.provider === 'amplify' ||
+      notifications.provider === 'amplify';
+
+    if (usesAmplify) {
+      configureAmplify();
+    }
   }, []);
 
   // Provider ordering (spec-defined, dependency-aware):
