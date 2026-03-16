@@ -7,6 +7,10 @@ const providers: Record<string, () => Promise<NotificationService>> = {
     const { createAmplifyNotifications } = await import('./providers/amplify');
     return createAmplifyNotifications();
   },
+  backend: async () => {
+    const { createBackendNotifications } = await import('./providers/backend');
+    return createBackendNotifications();
+  },
 };
 
 export async function createNotificationService(): Promise<NotificationService> {
