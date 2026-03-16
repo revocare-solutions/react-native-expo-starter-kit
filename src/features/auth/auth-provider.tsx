@@ -99,6 +99,30 @@ function AuthProviderInner({ children }: { children: React.ReactNode }) {
     return service.getSession();
   }, []);
 
+  const verifyEmail = useCallback(async (email: string, code: string): Promise<void> => {
+    const service = serviceRef.current;
+    if (!service?.verifyEmail) return;
+    await service.verifyEmail(email, code);
+  }, []);
+
+  const updateProfile = useCallback(
+    async (data: { displayName?: string; avatarUrl?: string }): Promise<User> => {
+      const service = serviceRef.current;
+      if (!service?.updateProfile) return { id: '', email: '', emailVerified: false };
+      const updated = await service.updateProfile(data);
+      setUser(updated);
+      return updated;
+    },
+    [],
+  );
+
+  const deleteAccount = useCallback(async (): Promise<void> => {
+    const service = serviceRef.current;
+    if (!service?.deleteAccount) return;
+    await service.deleteAccount();
+    setUser(null);
+  }, []);
+
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
@@ -109,8 +133,23 @@ function AuthProviderInner({ children }: { children: React.ReactNode }) {
       resetPassword,
       confirmResetPassword,
       getSession,
+      verifyEmail,
+      updateProfile,
+      deleteAccount,
     }),
-    [user, isLoading, signIn, signUp, signOut, resetPassword, confirmResetPassword, getSession],
+    [
+      user,
+      isLoading,
+      signIn,
+      signUp,
+      signOut,
+      resetPassword,
+      confirmResetPassword,
+      getSession,
+      verifyEmail,
+      updateProfile,
+      deleteAccount,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

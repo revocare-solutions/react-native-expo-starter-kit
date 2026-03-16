@@ -9,4 +9,7 @@ export interface AuthService {
   getCurrentUser(): Promise<User | null>;
   getSession(): Promise<Session | null>;
   onAuthStateChange(callback: (user: User | null) => void): () => void;
+  verifyEmail?(email: string, code: string): Promise<void>;
+  updateProfile?(data: { displayName?: string; avatarUrl?: string }): Promise<User>;
+  deleteAccount?(): Promise<void>;
 }
