@@ -5,6 +5,7 @@ import type { AnalyticsEvent, AnalyticsUserProperties } from '@/types';
 
 const BATCH_SIZE = 10;
 const FLUSH_INTERVAL_MS = 30000;
+const MAX_BUFFER_SIZE = 100;
 
 let eventBuffer: {
   eventName: string;
@@ -17,6 +18,7 @@ let eventBuffer: {
 }[] = [];
 let flushTimer: ReturnType<typeof setInterval> | null = null;
 let userProperties: AnalyticsUserProperties = {};
+let appStateSubscription: ReturnType<typeof AppState.addEventListener> | null = null;
 
 async function flushEvents() {
   if (eventBuffer.length === 0) return;
@@ -28,13 +30,16 @@ async function flushEvents() {
     await apiClient.post('/api/analytics/events/batch', { events: eventsToSend });
   } catch {
     eventBuffer.unshift(...eventsToSend);
+    if (eventBuffer.length > MAX_BUFFER_SIZE) {
+      eventBuffer = eventBuffer.slice(0, MAX_BUFFER_SIZE);
+    }
   }
 }
 
 function queueEvent(event: (typeof eventBuffer)[number]) {
   eventBuffer.push(event);
   if (eventBuffer.length >= BATCH_SIZE) {
-    flushEvents();
+    flushEvents().catch(() => {});
   }
 }
 
@@ -42,9 +47,9 @@ export function createBackendAnalytics(): AnalyticsService {
   return {
     async initialize() {
       flushTimer = setInterval(flushEvents, FLUSH_INTERVAL_MS);
-      AppState.addEventListener('change', (state) => {
+      appStateSubscription = AppState.addEventListener('change', (state) => {
         if (state === 'background' || state === 'inactive') {
-          flushEvents();
+          flushEvents().catch(() => {});
         }
       });
     },
@@ -84,6 +89,10 @@ export function createBackendAnalytics(): AnalyticsService {
       if (flushTimer) {
         clearInterval(flushTimer);
         flushTimer = null;
+      }
+      if (appStateSubscription) {
+        appStateSubscription.remove();
+        appStateSubscription = null;
       }
       eventBuffer = [];
     },

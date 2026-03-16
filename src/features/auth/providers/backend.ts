@@ -47,20 +47,27 @@ function mapUserProfile(data: {
   };
 }
 
-// Wire refresh token handlers for the 401 interceptor
-setRefreshTokenHandlers({
-  getRefreshToken: async () => storage.getString('refreshToken') ?? null,
-  onTokenRefreshed: (accessToken, refreshToken, expiresIn) => {
-    storeTokens(accessToken, refreshToken, expiresIn);
-  },
-  onRefreshFailed: () => {
-    clearTokens();
-    notifyListeners(null);
-  },
-});
+let refreshHandlersInitialized = false;
+
+function initRefreshHandlers() {
+  if (refreshHandlersInitialized) return;
+  refreshHandlersInitialized = true;
+
+  setRefreshTokenHandlers({
+    getRefreshToken: async () => storage.getString('refreshToken') ?? null,
+    onTokenRefreshed: (accessToken, refreshToken, expiresIn) => {
+      storeTokens(accessToken, refreshToken, expiresIn);
+    },
+    onRefreshFailed: () => {
+      clearTokens();
+      notifyListeners(null);
+    },
+  });
+}
 
 export const backendAuthService: AuthService = {
   async signIn(email, password) {
+    initRefreshHandlers();
     try {
       const { data } = await apiClient.post<{
         accessToken: string;
@@ -117,6 +124,7 @@ export const backendAuthService: AuthService = {
   },
 
   async getCurrentUser() {
+    initRefreshHandlers();
     const session = getStoredSession();
     if (!session) return null;
 
@@ -134,6 +142,7 @@ export const backendAuthService: AuthService = {
   },
 
   async getSession() {
+    initRefreshHandlers();
     return getStoredSession();
   },
 
