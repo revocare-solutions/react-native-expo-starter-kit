@@ -10,6 +10,8 @@ import { CrashReportingProvider } from '@/features/crash-reporting';
 import { AnalyticsProvider } from '@/features/analytics';
 import { I18nProvider } from '@/features/i18n';
 import { NotificationProvider } from '@/features/notifications';
+import { TasksProvider } from '@/features/tasks';
+import { SyncProvider } from '@/features/sync';
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   const colorScheme = useColorScheme();
@@ -27,8 +29,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
   }, []);
 
   // Provider ordering (spec-defined, dependency-aware):
-  // SafeArea → Theme → QueryClient → OfflineStorage → Auth → Analytics → CrashReporting → i18n → Notifications → ...children
-  // Future tasks will add providers in this exact order.
+  // SafeArea → Theme → QueryClient → OfflineStorage → Auth → Analytics → CrashReporting → i18n → Notifications → Tasks → Sync → ...children
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <QueryProvider>
@@ -38,7 +39,11 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
               <CrashReportingProvider>
                 <I18nProvider>
                   <NotificationProvider>
-                    {children}
+                    <TasksProvider>
+                      <SyncProvider>
+                        {children}
+                      </SyncProvider>
+                    </TasksProvider>
                   </NotificationProvider>
                 </I18nProvider>
               </CrashReportingProvider>
