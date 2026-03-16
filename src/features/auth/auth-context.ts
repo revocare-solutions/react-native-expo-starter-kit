@@ -10,6 +10,9 @@ export interface AuthContextValue {
   resetPassword: (email: string) => Promise<void>;
   confirmResetPassword: (email: string, code: string, newPassword: string) => Promise<void>;
   getSession: () => Promise<Session | null>;
+  verifyEmail: (email: string, code: string) => Promise<void>;
+  updateProfile: (data: { displayName?: string; avatarUrl?: string }) => Promise<User>;
+  deleteAccount: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null);

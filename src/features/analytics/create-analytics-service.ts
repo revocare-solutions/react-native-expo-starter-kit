@@ -7,6 +7,10 @@ const providers: Record<string, () => Promise<AnalyticsService>> = {
     const { createAmplifyAnalytics } = await import('./providers/amplify');
     return createAmplifyAnalytics();
   },
+  backend: async () => {
+    const { createBackendAnalytics } = await import('./providers/backend');
+    return createBackendAnalytics();
+  },
 };
 
 export async function createAnalyticsService(): Promise<AnalyticsService> {

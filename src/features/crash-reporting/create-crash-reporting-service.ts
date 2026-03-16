@@ -7,6 +7,10 @@ const providers: Record<string, () => Promise<CrashReportingService>> = {
     const { createSentryCrashReporting } = await import('./providers/sentry');
     return createSentryCrashReporting();
   },
+  backend: async () => {
+    const { createBackendCrashReporting } = await import('./providers/backend');
+    return createBackendCrashReporting();
+  },
 };
 
 export async function createCrashReportingService(): Promise<CrashReportingService> {

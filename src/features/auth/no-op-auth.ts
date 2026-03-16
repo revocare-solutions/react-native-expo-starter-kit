@@ -9,4 +9,7 @@ export const noOpAuth: AuthService = {
   getCurrentUser: async () => null,
   getSession: async () => null,
   onAuthStateChange: () => () => {},
+  verifyEmail: async () => {},
+  updateProfile: async () => ({ id: '', email: '', emailVerified: false }),
+  deleteAccount: async () => {},
 };
