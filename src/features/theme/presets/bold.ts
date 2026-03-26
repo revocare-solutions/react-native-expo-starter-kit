@@ -1,4 +1,4 @@
-import type { ThemeConfig } from '@/types';
+import type { ThemeConfig } from '../../../types/theme.types';
 
 export const boldPreset: ThemeConfig = {
   colors: {

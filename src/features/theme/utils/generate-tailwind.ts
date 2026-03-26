@@ -1,4 +1,4 @@
-import type { ThemeConfig, ColorScale } from '@/types';
+import type { ThemeConfig, ColorScale } from '../../../types/theme.types';
 
 function colorScaleToTailwind(scale: ColorScale): Record<string, string> {
   return Object.fromEntries(
