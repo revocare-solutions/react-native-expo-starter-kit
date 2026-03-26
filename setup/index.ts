@@ -181,6 +181,25 @@ async function main() {
   await removeFeatureFiles(PROJECT_ROOT, allFilesToRemove);
   s.stop(color.green(`Removed ${stripResult.featuresToRemove.length} features`));
 
+  // Step 2a: Rewrite types/index.ts to remove exports for deleted type files
+  s.start('Cleaning type exports');
+  const typesIndexPath = path.join(PROJECT_ROOT, 'src/types/index.ts');
+  if (await fs.pathExists(typesIndexPath)) {
+    const typesContent = await fs.readFile(typesIndexPath, 'utf-8');
+    const cleanedTypes = typesContent
+      .split('\n')
+      .filter((line) => {
+        // Remove lines that re-export from deleted type files
+        for (const removed of stripResult.featuresToRemove) {
+          if (line.includes(`./${removed}.types`)) return false;
+        }
+        return true;
+      })
+      .join('\n');
+    await fs.writeFile(typesIndexPath, cleanedTypes);
+  }
+  s.stop(color.green('Cleaned type exports'));
+
   // Step 2b: Rewrite service factory files to remove references to deleted providers
   s.start('Rewriting service factories');
   for (const [featureName, selectedProvider] of Object.entries(answers.features)) {
