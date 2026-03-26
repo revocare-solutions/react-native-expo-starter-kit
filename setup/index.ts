@@ -210,6 +210,26 @@ async function main() {
     const basicTailwind = `/** @type {import('tailwindcss').Config} */\nmodule.exports = {\n  content: ["./src/**/*.{js,jsx,ts,tsx}"],\n  presets: [require("nativewind/preset")],\n  theme: {\n    extend: {},\n  },\n  plugins: [],\n};\n`;
     await fs.writeFile(path.join(PROJECT_ROOT, 'tailwind.config.js'), basicTailwind);
     s.stop(color.green('Removed theme feature'));
+  } else {
+    // Rewrite theme.config.ts to use the selected preset
+    s.start(`Applying theme preset: ${answers.theme}`);
+    const presetMap: Record<string, { importName: string; fileName: string }> = {
+      minimal: { importName: 'minimalPreset', fileName: 'minimal' },
+      bold: { importName: 'boldPreset', fileName: 'bold' },
+      corporate: { importName: 'corporatePreset', fileName: 'corporate' },
+    };
+    const preset = presetMap[answers.theme];
+    if (preset) {
+      const themeConfigContent = `import type { ThemeConfig } from '../types/theme.types';\nimport { ${preset.importName} } from '../features/theme/presets/${preset.fileName}';\n\nexport const themeConfig: ThemeConfig = ${preset.importName};\n`;
+      await fs.writeFile(path.join(PROJECT_ROOT, 'src/config/theme.config.ts'), themeConfigContent);
+      // Delete unselected preset files
+      const allPresets = ['minimal', 'bold', 'corporate'];
+      const presetsToRemove = allPresets
+        .filter((p) => p !== answers.theme)
+        .map((p) => `src/features/theme/presets/${p}.ts`);
+      await removeFeatureFiles(PROJECT_ROOT, presetsToRemove);
+    }
+    s.stop(color.green(`Applied theme preset: ${answers.theme}`));
   }
 
   // Step 8: pnpm install
