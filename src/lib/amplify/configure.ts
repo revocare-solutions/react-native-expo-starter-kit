@@ -7,10 +7,11 @@ export async function configureAmplify(): Promise<void> {
 
   const { features } = basekitConfig;
 
+  const f = features as Record<string, { enabled?: boolean; provider?: string } | undefined>;
   const usesAmplify =
-    (features.auth.enabled && features.auth.provider === 'amplify') ||
-    (features.analytics.enabled && features.analytics.provider === 'amplify') ||
-    (features.notifications.enabled && features.notifications.provider === 'amplify');
+    (f.auth?.enabled && f.auth?.provider === 'amplify') ||
+    (f.analytics?.enabled && f.analytics?.provider === 'amplify') ||
+    (f.notifications?.enabled && f.notifications?.provider === 'amplify');
 
   if (!usesAmplify) return;
 
