@@ -20,7 +20,7 @@ function QuickStartStep({
   return (
     <ThemedView className="gap-1 mb-4">
       <View className="flex-row items-center gap-2">
-        <View className="w-6 h-6 rounded-full bg-blue-500 items-center justify-center">
+        <View className="w-6 h-6 rounded-full bg-primary-500 items-center justify-center">
           <ThemedText className="text-white text-xs font-bold">{number}</ThemedText>
         </View>
         <ThemedText type="subtitle">{title}</ThemedText>
@@ -32,7 +32,7 @@ function QuickStartStep({
 
 function TechBadge({ label }: { label: string }) {
   return (
-    <View className="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800">
+    <View className="px-3 py-1.5 rounded-lg bg-neutral-100 dark:bg-neutral-800">
       <ThemedText className="text-xs font-semibold">{label}</ThemedText>
     </View>
   );
@@ -58,7 +58,7 @@ export default function HomeScreen() {
         — enable what you need, swap providers without touching app code.
       </ThemedText>
 
-      <View className="bg-blue-500 p-4 rounded-xl my-2">
+      <View className="bg-primary-500 p-4 rounded-xl my-2">
         <ThemedText className="text-white font-bold text-center text-base">
           {basekitConfig.app.name} — Ready to build
         </ThemedText>
@@ -119,7 +119,7 @@ export default function HomeScreen() {
         </ThemedText>
       </QuickStartStep>
 
-      <View className="bg-gray-100 dark:bg-gray-800 p-4 rounded-xl mt-2">
+      <View className="bg-neutral-100 dark:bg-neutral-800 p-4 rounded-xl mt-2">
         <ThemedText className="text-sm text-center">
           Check out the{' '}
           <ThemedText type="defaultSemiBold" className="text-sm">
