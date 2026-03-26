@@ -8,6 +8,9 @@ import { runInteractivePrompts, getQuickDefaults } from './prompts';
 import type { SetupAnswers } from './prompts';
 import { resolveFeaturesToStrip, collectDepsToRemove, collectEnvVarsToKeep } from './generator';
 import type { Manifest } from './generator';
+import { generateClaudeMd } from './workflows/generate-claude-md';
+import { generateSettings } from './workflows/generate-settings';
+import { getAvailableCommands } from './workflows/generate-commands';
 import { generateAppProviders } from './providers';
 import { removeFeatureFiles, cleanPackageJson, updateEnvExample, updateAppJson, rewriteServiceFactory } from './utils';
 
@@ -64,7 +67,7 @@ async function main() {
   if (isQuick) {
     answers = getQuickDefaults();
     p.intro(color.bgCyan(color.black(' Basekit — Quick Setup ')));
-    p.log.info(`Theme: minimal | Backend: none | Features: offline-storage, i18n, forms`);
+    p.log.info(`Theme: minimal | Backend: none | Features: offline-storage, i18n, forms | Workflow: manual`);
   } else if (fromFile) {
     const configContent = await fs.readFile(fromFile, 'utf-8');
     const config = YAML.parse(configContent);
@@ -75,6 +78,9 @@ async function main() {
       theme: config.theme ?? null,
       backend: config.backend ?? null,
       features: {} as Record<string, string>,
+      workflow: 'manual' as 'agentic' | 'manual',
+      agents: [],
+      commands: [],
     };
     for (const feat of config.features ?? []) {
       const feature = manifest.features[feat];
@@ -94,6 +100,9 @@ async function main() {
     if (answers.theme) {
       answers.features['theme'] = answers.theme;
     }
+    answers.workflow = (config.workflow as 'agentic' | 'manual') ?? 'manual';
+    answers.agents = (config.agents as string[]) ?? [];
+    answers.commands = (config.commands as string[]) ?? [];
     p.intro(color.bgCyan(color.black(` Basekit — Config: ${fromFile} `)));
   } else {
     answers = await runInteractivePrompts(manifest);
@@ -132,6 +141,9 @@ async function main() {
         `Routes to remove: ${stripResult.routesToRemove.join(', ') || 'none'}`,
         `Dependencies to remove: ${depsToRemove.length}`,
         `Env vars to keep: ${envVarsToKeep.join(', ')}`,
+        `Workflow: ${answers.workflow}`,
+        `Agents: ${answers.agents.join(', ') || 'none'}`,
+        `Commands: ${answers.commands.join(', ') || 'none'}`,
       ].join('\n'),
       'Dry Run Summary',
     );
@@ -253,6 +265,39 @@ async function main() {
     }
     s.stop(color.green(`Applied theme preset: ${answers.theme}`));
   }
+
+  // Generate workflow files
+  s.start('Generating workflow files');
+  const claudeMd = generateClaudeMd({
+    appName: answers.appName,
+    bundleId: answers.bundleId,
+    scheme: answers.scheme,
+    features: answers.features,
+    workflow: answers.workflow,
+  });
+  await fs.writeFile(path.join(PROJECT_ROOT, 'CLAUDE.md'), claudeMd);
+
+  if (answers.workflow === 'agentic' && answers.agents.includes('claude-code')) {
+    await fs.ensureDir(path.join(PROJECT_ROOT, '.claude'));
+    await fs.writeJson(
+      path.join(PROJECT_ROOT, '.claude', 'settings.json'),
+      generateSettings(),
+      { spaces: 2 },
+    );
+
+    const availableCommands = getAvailableCommands(answers.commands, answers.features, manifest);
+    const commandsDir = path.join(PROJECT_ROOT, '.claude', 'commands');
+    await fs.ensureDir(commandsDir);
+
+    for (const cmd of availableCommands) {
+      const templatePath = path.join(__dirname, 'workflows', 'templates', cmd.templateFile);
+      if (await fs.pathExists(templatePath)) {
+        const content = await fs.readFile(templatePath, 'utf-8');
+        await fs.writeFile(path.join(commandsDir, `${cmd.id}.md`), content);
+      }
+    }
+  }
+  s.stop(color.green('Generated workflow files'));
 
   // Step 8: pnpm install
   s.start('Installing dependencies');

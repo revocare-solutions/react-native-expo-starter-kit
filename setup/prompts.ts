@@ -9,6 +9,9 @@ export interface SetupAnswers {
   theme: string | null;
   backend: string | null;
   features: Record<string, string>;
+  workflow: 'agentic' | 'manual';
+  agents: string[];
+  commands: string[];
 }
 
 export function validateDependencies(
@@ -168,6 +171,62 @@ export async function runInteractivePrompts(manifest: Manifest): Promise<SetupAn
     }
   }
 
+  // Workflow mode
+  const workflow = await p.select({
+    message: 'Development workflow',
+    options: [
+      { value: 'agentic', label: 'Agentic', hint: 'Generate AI agent workflow files' },
+      { value: 'manual', label: 'Manual', hint: 'Minimal project context only' },
+    ],
+  });
+
+  if (p.isCancel(workflow)) {
+    p.cancel('Setup cancelled.');
+    process.exit(0);
+  }
+
+  let agents: string[] = [];
+  let selectedCommands: string[] = [];
+
+  if (workflow === 'agentic') {
+    const agentChoice = await p.multiselect({
+      message: 'Select agents',
+      options: [
+        { value: 'claude-code', label: 'Claude Code', hint: 'CLAUDE.md + .claude/ commands' },
+      ],
+      required: true,
+    });
+
+    if (p.isCancel(agentChoice)) {
+      p.cancel('Setup cancelled.');
+      process.exit(0);
+    }
+    agents = agentChoice as string[];
+
+    if (agents.includes('claude-code')) {
+      const { commands: registryCommands } = await import('./workflows/registry');
+      const filteredCommands = registryCommands.filter(
+        (cmd) => !cmd.condition || cmd.condition(features, manifest),
+      );
+
+      const commandChoice = await p.multiselect({
+        message: 'Select workflow commands',
+        options: filteredCommands.map((cmd) => ({
+          value: cmd.id,
+          label: cmd.name,
+          hint: cmd.description,
+        })),
+        required: false,
+      });
+
+      if (p.isCancel(commandChoice)) {
+        p.cancel('Setup cancelled.');
+        process.exit(0);
+      }
+      selectedCommands = commandChoice as string[];
+    }
+  }
+
   return {
     appName: appInfo.appName,
     bundleId: appInfo.bundleId,
@@ -175,6 +234,9 @@ export async function runInteractivePrompts(manifest: Manifest): Promise<SetupAn
     theme: theme === 'none' ? null : (theme as string),
     backend: backend === 'none' ? null : (backend as string),
     features,
+    workflow: workflow as 'agentic' | 'manual',
+    agents,
+    commands: selectedCommands,
   };
 }
 
@@ -191,5 +253,8 @@ export function getQuickDefaults(): SetupAnswers {
       forms: '',
       theme: 'minimal',
     },
+    workflow: 'manual' as const,
+    agents: [],
+    commands: [],
   };
 }
