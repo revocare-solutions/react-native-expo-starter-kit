@@ -9,7 +9,7 @@ import type { SetupAnswers } from './prompts';
 import { resolveFeaturesToStrip, collectDepsToRemove, collectEnvVarsToKeep } from './generator';
 import type { Manifest } from './generator';
 import { generateAppProviders } from './providers';
-import { removeFeatureFiles, cleanPackageJson, updateEnvExample, updateAppJson } from './utils';
+import { removeFeatureFiles, cleanPackageJson, updateEnvExample, updateAppJson, rewriteServiceFactory } from './utils';
 
 const PROJECT_ROOT = path.resolve(__dirname, '..');
 
@@ -168,6 +168,30 @@ async function main() {
   ];
   await removeFeatureFiles(PROJECT_ROOT, allFilesToRemove);
   s.stop(color.green(`Removed ${stripResult.featuresToRemove.length} features`));
+
+  // Step 2b: Rewrite service factory files to remove references to deleted providers
+  s.start('Rewriting service factories');
+  for (const [featureName, selectedProvider] of Object.entries(answers.features)) {
+    const feature = manifest.features[featureName];
+    if (!feature || Object.keys(feature.providers).length <= 1) continue;
+
+    const removedProviders = Object.keys(feature.providers).filter((p) => p !== selectedProvider);
+    if (removedProviders.length === 0) continue;
+
+    // Find the create-*-service.ts file in the feature directory
+    const featureDir = feature.sharedFiles.find((f) => f.endsWith('/'));
+    if (!featureDir) continue;
+
+    const factoryFiles = await fs.readdir(path.join(PROJECT_ROOT, featureDir)).catch(() => []);
+    const factoryFile = (factoryFiles as string[]).find((f) => f.startsWith('create-') && f.endsWith('-service.ts'));
+    if (factoryFile) {
+      await rewriteServiceFactory(
+        path.join(PROJECT_ROOT, featureDir, factoryFile),
+        removedProviders,
+      );
+    }
+  }
+  s.stop(color.green('Rewrote service factories'));
 
   // Step 3: Rewrite app-providers.tsx
   s.start('Rewriting app-providers.tsx');
