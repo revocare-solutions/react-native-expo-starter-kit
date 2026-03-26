@@ -38,10 +38,12 @@ describe('cleanPackageJson', () => {
       devDependencies: { typescript: '^5.0.0', '@clack/prompts': '^0.1.0' },
     };
     const result = cleanPackageJson(pkg, ['aws-amplify'], ['@clack/prompts']);
-    expect(result.dependencies['aws-amplify']).toBeUndefined();
-    expect(result.dependencies['react']).toBe('19.0.0');
-    expect(result.devDependencies['@clack/prompts']).toBeUndefined();
-    expect(result.devDependencies['typescript']).toBe('^5.0.0');
+    const deps = result.dependencies as Record<string, string>;
+    const devDeps = result.devDependencies as Record<string, string>;
+    expect(deps['aws-amplify']).toBeUndefined();
+    expect(deps['react']).toBe('19.0.0');
+    expect(devDeps['@clack/prompts']).toBeUndefined();
+    expect(devDeps['typescript']).toBe('^5.0.0');
   });
 });
 
