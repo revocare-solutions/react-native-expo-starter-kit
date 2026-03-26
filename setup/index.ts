@@ -183,7 +183,7 @@ async function main() {
 
   // Step 5: Clean package.json
   s.start('Cleaning package.json');
-  const setupDevDeps = ['@clack/prompts', 'fs-extra', '@types/fs-extra', 'yaml', 'execa', 'picocolors', 'tsx', 'jiti'];
+  const setupDevDeps = ['@clack/prompts', 'fs-extra', '@types/fs-extra', 'yaml', 'execa', 'picocolors', 'tsx'];
   const pkgPath = path.join(PROJECT_ROOT, 'package.json');
   const pkg = await fs.readJson(pkgPath);
   const cleanedPkg = cleanPackageJson(pkg, depsToRemove, setupDevDeps);
