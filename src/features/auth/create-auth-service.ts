@@ -1,5 +1,5 @@
 import type { AuthService } from '@/services/auth.interface';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 import { noOpAuth } from './no-op-auth';
 
 const providers: Record<string, () => Promise<AuthService>> = {
@@ -7,11 +7,11 @@ const providers: Record<string, () => Promise<AuthService>> = {
 };
 
 export async function createAuthService(): Promise<AuthService> {
-  if (!starterConfig.features.auth.enabled) {
+  if (!basekitConfig.features.auth.enabled) {
     return noOpAuth;
   }
 
-  const { provider } = starterConfig.features.auth;
+  const { provider } = basekitConfig.features.auth;
   const factory = providers[provider];
   if (!factory) {
     console.warn(`[auth] Unknown auth provider: ${provider}. Falling back to no-op auth.`);

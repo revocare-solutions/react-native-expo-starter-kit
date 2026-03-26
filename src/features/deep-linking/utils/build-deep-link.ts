@@ -1,7 +1,7 @@
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 
 export function buildDeepLink(path: string): string {
-  const scheme = starterConfig.app.scheme;
+  const scheme = basekitConfig.app.scheme;
   // Remove leading slash if present
   const cleanPath = path.startsWith('/') ? path.slice(1) : path;
   return `${scheme}://${cleanPath}`;

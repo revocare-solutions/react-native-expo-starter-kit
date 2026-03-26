@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 
 export interface OtaUpdateStatus {
   isChecking: boolean;
@@ -17,7 +17,7 @@ export function useOtaUpdates() {
   });
 
   const checkForUpdate = useCallback(async () => {
-    if (!starterConfig.features.otaUpdates.enabled) return;
+    if (!basekitConfig.features.otaUpdates.enabled) return;
 
     try {
       setStatus((s) => ({ ...s, isChecking: true, error: null }));
@@ -39,7 +39,7 @@ export function useOtaUpdates() {
   }, []);
 
   const downloadAndApply = useCallback(async () => {
-    if (!starterConfig.features.otaUpdates.enabled) return;
+    if (!basekitConfig.features.otaUpdates.enabled) return;
 
     try {
       setStatus((s) => ({ ...s, isDownloading: true, error: null }));

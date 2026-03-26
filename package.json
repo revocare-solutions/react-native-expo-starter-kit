@@ -12,6 +12,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "setup": "tsx setup/index.ts",
     "typecheck": "tsc --noEmit",
     "test:e2e": "maestro test e2e/.maestro/"
   },
@@ -34,8 +35,10 @@
     "expo-haptics": "~15.0.7",
     "expo-image": "~3.0.9",
     "expo-linking": "~8.0.8",
+    "expo-local-authentication": "^55.0.9",
     "expo-localization": "^55.0.8",
     "expo-router": "~6.0.11",
+    "expo-secure-store": "^55.0.9",
     "expo-splash-screen": "~31.0.10",
     "expo-status-bar": "~3.0.8",
     "expo-symbols": "~1.0.7",
@@ -61,18 +64,26 @@
     "zustand": "^5.0.11"
   },
   "devDependencies": {
+    "@clack/prompts": "^1.1.0",
     "@testing-library/jest-native": "^5.4.3",
     "@testing-library/react-native": "^13.3.3",
+    "@types/fs-extra": "^11.0.4",
     "@types/jest": "^30.0.0",
     "@types/react": "~19.1.0",
     "babel-plugin-module-resolver": "^5.0.2",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
+    "execa": "^5.1.1",
+    "fs-extra": "^11.3.4",
     "jest": "^30.3.0",
     "jest-expo": "^55.0.9",
+    "jiti": "^2.6.1",
+    "picocolors": "^1.1.1",
     "react-test-renderer": "^19.1.0",
     "ts-node": "^10.9.2",
-    "typescript": "~5.9.2"
+    "tsx": "^4.21.0",
+    "typescript": "~5.9.2",
+    "yaml": "^2.8.3"
   },
   "packageManager": "pnpm@10.18.2",
   "private": true

@@ -32,8 +32,8 @@ describe('createCrashReportingService', () => {
   });
 
   it('returns noOpCrashReporting when feature is disabled', async () => {
-    jest.mock('@/config/starter.config', () => ({
-      starterConfig: {
+    jest.mock('@/config/basekit.config', () => ({
+      basekitConfig: {
         features: {
           crashReporting: { enabled: false, provider: 'sentry' },
         },
@@ -52,8 +52,8 @@ describe('createCrashReportingService', () => {
   });
 
   it('throws for unknown provider', async () => {
-    jest.mock('@/config/starter.config', () => ({
-      starterConfig: {
+    jest.mock('@/config/basekit.config', () => ({
+      basekitConfig: {
         features: {
           crashReporting: {
             enabled: true,
@@ -73,8 +73,8 @@ describe('createCrashReportingService', () => {
   });
 
   it('returns noOpCrashReporting on provider failure', async () => {
-    jest.mock('@/config/starter.config', () => ({
-      starterConfig: {
+    jest.mock('@/config/basekit.config', () => ({
+      basekitConfig: {
         features: {
           crashReporting: { enabled: true, provider: 'sentry' },
         },

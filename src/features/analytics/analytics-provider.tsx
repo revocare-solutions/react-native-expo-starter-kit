@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react';
 import type { AnalyticsService } from '@/services/analytics.interface';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 import { createAnalyticsService } from './create-analytics-service';
 
 export const AnalyticsContext = createContext<AnalyticsService | null>(null);
@@ -22,7 +22,7 @@ function AnalyticsProviderInner({ children }: { children: React.ReactNode }) {
 }
 
 export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
-  if (!starterConfig.features.analytics.enabled) {
+  if (!basekitConfig.features.analytics.enabled) {
     return <>{children}</>;
   }
 

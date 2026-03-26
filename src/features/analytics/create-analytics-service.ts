@@ -1,5 +1,5 @@
 import type { AnalyticsService } from '@/services/analytics.interface';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 import { noOpAnalytics } from './no-op-analytics';
 
 const providers: Record<string, () => Promise<AnalyticsService>> = {
@@ -10,11 +10,11 @@ const providers: Record<string, () => Promise<AnalyticsService>> = {
 };
 
 export async function createAnalyticsService(): Promise<AnalyticsService> {
-  if (!starterConfig.features.analytics.enabled) {
+  if (!basekitConfig.features.analytics.enabled) {
     return noOpAnalytics;
   }
 
-  const { provider } = starterConfig.features.analytics;
+  const { provider } = basekitConfig.features.analytics;
   const factory = providers[provider];
   if (!factory) throw new Error(`Unknown analytics provider: ${provider}`);
 

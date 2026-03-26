@@ -1,11 +1,11 @@
 import { useCallback, useState } from 'react';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 
 export function useSplashScreen() {
   const [isReady, setIsReady] = useState(false);
 
   const hideSplash = useCallback(async () => {
-    if (!starterConfig.features.splashAppIcon.enabled) return;
+    if (!basekitConfig.features.splashAppIcon.enabled) return;
     try {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const SplashScreen = require('expo-splash-screen');
@@ -18,7 +18,7 @@ export function useSplashScreen() {
   }, []);
 
   const preventAutoHide = useCallback(async () => {
-    if (!starterConfig.features.splashAppIcon.enabled) return;
+    if (!basekitConfig.features.splashAppIcon.enabled) return;
     try {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const SplashScreen = require('expo-splash-screen');

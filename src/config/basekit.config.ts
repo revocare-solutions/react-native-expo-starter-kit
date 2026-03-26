@@ -1,4 +1,4 @@
-export interface StarterConfig {
+export interface BasekitConfig {
   app: {
     name: string;
     bundleId: string;
@@ -23,7 +23,7 @@ export interface StarterConfig {
   };
 }
 
-export const starterConfig: StarterConfig = {
+export const basekitConfig: BasekitConfig = {
   app: {
     name: 'MyApp',
     bundleId: 'com.mycompany.myapp',

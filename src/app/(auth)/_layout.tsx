@@ -1,8 +1,8 @@
 import { Redirect, Stack } from 'expo-router';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 
 export default function AuthLayout() {
-  if (!starterConfig.features.auth.enabled) {
+  if (!basekitConfig.features.auth.enabled) {
     return <Redirect href="/(tabs)" />;
   }
 

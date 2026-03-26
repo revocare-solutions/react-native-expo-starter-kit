@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react';
 import type { StorageService } from '@/services/storage.interface';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 import { createStorageService } from './create-storage-service';
 
 export const StorageContext = createContext<StorageService | null>(null);
@@ -22,7 +22,7 @@ function StorageProviderInner({ children }: { children: React.ReactNode }) {
 }
 
 export function StorageProvider({ children }: { children: React.ReactNode }) {
-  if (!starterConfig.features.offlineStorage.enabled) {
+  if (!basekitConfig.features.offlineStorage.enabled) {
     return <>{children}</>;
   }
 

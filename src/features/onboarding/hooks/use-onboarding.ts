@@ -1,10 +1,10 @@
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 import { useAppStore } from '@/store/app-store';
 
 export function useOnboarding() {
   const hasCompleted = useAppStore((s) => s.hasCompletedOnboarding);
   const setCompleted = useAppStore((s) => s.setHasCompletedOnboarding);
-  const enabled = starterConfig.features.onboarding.enabled;
+  const enabled = basekitConfig.features.onboarding.enabled;
 
   return {
     /** Whether onboarding should be shown */

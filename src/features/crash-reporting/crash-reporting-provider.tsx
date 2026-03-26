@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react';
 import type { CrashReportingService } from '@/services/crash-reporting.interface';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 import { createCrashReportingService } from './create-crash-reporting-service';
 
 export const CrashReportingContext = createContext<CrashReportingService | null>(null);
@@ -22,7 +22,7 @@ function CrashReportingProviderInner({ children }: { children: React.ReactNode }
 }
 
 export function CrashReportingProvider({ children }: { children: React.ReactNode }) {
-  if (!starterConfig.features.crashReporting.enabled) {
+  if (!basekitConfig.features.crashReporting.enabled) {
     return <>{children}</>;
   }
 

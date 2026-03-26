@@ -1,11 +1,11 @@
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 
 let configured = false;
 
 export async function configureAmplify(): Promise<void> {
   if (configured) return;
 
-  const { features } = starterConfig;
+  const { features } = basekitConfig;
 
   const usesAmplify =
     (features.auth.enabled && features.auth.provider === 'amplify') ||

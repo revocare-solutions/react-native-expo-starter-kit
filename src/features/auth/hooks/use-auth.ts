@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 import { AuthContext, type AuthContextValue } from '../auth-context';
 
 const noOpAuthContext: AuthContextValue = {
@@ -14,7 +14,7 @@ const noOpAuthContext: AuthContextValue = {
 };
 
 export function useAuth(): AuthContextValue {
-  if (!starterConfig.features.auth.enabled) {
+  if (!basekitConfig.features.auth.enabled) {
     return noOpAuthContext;
   }
 

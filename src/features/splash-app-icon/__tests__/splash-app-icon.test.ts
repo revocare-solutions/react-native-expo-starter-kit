@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react-native';
 import { useSplashScreen } from '../hooks/use-splash-screen';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 
 jest.mock(
   'expo-splash-screen',
@@ -11,14 +11,14 @@ jest.mock(
   { virtual: true },
 );
 
-jest.mock('@/config/starter.config', () => ({
-  starterConfig: {
+jest.mock('@/config/basekit.config', () => ({
+  basekitConfig: {
     features: { splashAppIcon: { enabled: true } },
   },
 }));
 
 describe('useSplashScreen', () => {
-  const mockConfig = starterConfig as {
+  const mockConfig = basekitConfig as {
     features: { splashAppIcon: { enabled: boolean } };
   };
 

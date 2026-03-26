@@ -8,8 +8,8 @@ describe('i18n', () => {
       getLocales: () => [{ languageCode: 'en' }],
     }));
 
-    jest.mock('@/config/starter.config', () => ({
-      starterConfig: {
+    jest.mock('@/config/basekit.config', () => ({
+      basekitConfig: {
         features: {
           i18n: { enabled: true, defaultLocale: 'en' },
         },
@@ -33,8 +33,8 @@ describe('i18n', () => {
       getLocales: () => [{ languageCode: 'fr' }],
     }));
 
-    jest.mock('@/config/starter.config', () => ({
-      starterConfig: {
+    jest.mock('@/config/basekit.config', () => ({
+      basekitConfig: {
         features: {
           i18n: { enabled: true, defaultLocale: 'en' },
         },
@@ -55,8 +55,8 @@ describe('i18n', () => {
       getLocales: () => [{ languageCode: 'es' }],
     }));
 
-    jest.mock('@/config/starter.config', () => ({
-      starterConfig: {
+    jest.mock('@/config/basekit.config', () => ({
+      basekitConfig: {
         features: {
           i18n: { enabled: true, defaultLocale: 'en' },
         },

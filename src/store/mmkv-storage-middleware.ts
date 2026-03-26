@@ -1,8 +1,8 @@
 import type { StateStorage } from 'zustand/middleware';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 
 export function createZustandMMKVStorage(): StateStorage {
-  if (!starterConfig.features.offlineStorage.enabled) {
+  if (!basekitConfig.features.offlineStorage.enabled) {
     const memoryStore = new Map<string, string>();
     return {
       getItem: (name) => memoryStore.get(name) ?? null,

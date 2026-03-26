@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import * as Linking from 'expo-linking';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 
 export function useDeepLink() {
   const [lastUrl, setLastUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!starterConfig.features.deepLinking.enabled) return;
+    if (!basekitConfig.features.deepLinking.enabled) return;
 
     // Get initial URL (app opened via deep link)
     Linking.getInitialURL().then((url) => {

@@ -3,8 +3,8 @@ import type { useAppStore as UseAppStoreType } from '../app-store';
 type AppStore = typeof UseAppStoreType;
 
 function getStore(): AppStore {
-  jest.mock('@/config/starter.config', () => ({
-    starterConfig: {
+  jest.mock('@/config/basekit.config', () => ({
+    basekitConfig: {
       features: {
         offlineStorage: { enabled: false, provider: 'mmkv' },
       },

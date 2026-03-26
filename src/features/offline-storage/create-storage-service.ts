@@ -1,5 +1,5 @@
 import type { StorageService } from '@/services/storage.interface';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 import { noOpStorage } from './no-op-storage';
 
 const providers: Record<string, () => Promise<StorageService>> = {
@@ -9,11 +9,11 @@ const providers: Record<string, () => Promise<StorageService>> = {
 };
 
 export async function createStorageService(): Promise<StorageService> {
-  if (!starterConfig.features.offlineStorage.enabled) {
+  if (!basekitConfig.features.offlineStorage.enabled) {
     return noOpStorage;
   }
 
-  const { provider } = starterConfig.features.offlineStorage;
+  const { provider } = basekitConfig.features.offlineStorage;
   const factory = providers[provider];
   if (!factory) throw new Error(`Unknown storage provider: ${provider}`);
 

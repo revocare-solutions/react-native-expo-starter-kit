@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 import { setAuthTokenGetter } from '@/lib/api';
 import type { AuthService } from '@/services/auth.interface';
 import type { AuthResult, User, Session } from '@/types';
@@ -117,7 +117,7 @@ function AuthProviderInner({ children }: { children: React.ReactNode }) {
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  if (!starterConfig.features.auth.enabled) {
+  if (!basekitConfig.features.auth.enabled) {
     return <>{children}</>;
   }
 

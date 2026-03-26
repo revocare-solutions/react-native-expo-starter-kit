@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 
 export const apiClient = axios.create({
-  baseURL: starterConfig.api.baseUrl,
-  timeout: starterConfig.api.timeout,
+  baseURL: basekitConfig.api.baseUrl,
+  timeout: basekitConfig.api.timeout,
   headers: {
     'Content-Type': 'application/json',
   },
