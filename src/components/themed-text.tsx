@@ -19,12 +19,18 @@ export function ThemedText({
   ...rest
 }: ThemedTextProps) {
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
-  const { tint } = useThemeColors();
+  const { tint, fonts } = useThemeColors();
+
+  const fontFamily =
+    type === 'title' || type === 'subtitle' || type === 'defaultSemiBold'
+      ? (fonts.bold ?? fonts.semiBold)
+      : fonts.regular;
 
   return (
     <Text
       style={[
         { color },
+        fontFamily ? { fontFamily } : undefined,
         type === 'default' ? styles.default : undefined,
         type === 'title' ? styles.title : undefined,
         type === 'defaultSemiBold' ? styles.defaultSemiBold : undefined,

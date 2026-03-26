@@ -1,5 +1,6 @@
 import { createContext, useContext, useCallback } from 'react';
 import type { ThemeConfig } from '@/types';
+import { FONT_FAMILY_MAP } from '../font-map';
 
 interface ThemeContextValue {
   config: ThemeConfig;
@@ -35,6 +36,11 @@ export function useTheme() {
     spacing,
     borderRadius: config.borderRadius,
     shadows: config.shadows,
+    fonts: FONT_FAMILY_MAP[config.typography.fontFamily.sans] ?? {
+      regular: undefined,
+      semiBold: undefined,
+      bold: undefined,
+    },
     mode,
     setMode,
     isDark: mode === 'dark',
