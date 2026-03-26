@@ -16,69 +16,31 @@ interface FeatureItem {
 }
 
 function getFeatures(): FeatureItem[] {
-  const { features } = basekitConfig;
-  return [
-    {
-      name: 'Authentication',
-      enabled: features.auth.enabled,
-      provider: features.auth.provider,
-      description: 'Sign in, sign up, password reset, and session management with swappable providers.',
-    },
-    {
-      name: 'Analytics',
-      enabled: features.analytics.enabled,
-      provider: features.analytics.provider,
-      description: 'Track events, screen views, and user properties across your app.',
-    },
-    {
-      name: 'Crash Reporting',
-      enabled: features.crashReporting.enabled,
-      provider: features.crashReporting.provider,
-      description: 'Capture exceptions, breadcrumbs, and error context in production.',
-    },
-    {
-      name: 'Push Notifications',
-      enabled: features.notifications.enabled,
-      provider: features.notifications.provider,
-      description: 'Request permissions, get push tokens, send local notifications, and handle responses.',
-    },
-    {
-      name: 'Offline Storage',
-      enabled: features.offlineStorage.enabled,
-      provider: features.offlineStorage.provider,
-      description: 'Persistent key-value storage with MMKV or AsyncStorage backends.',
-    },
-    {
-      name: 'Internationalization',
-      enabled: features.i18n.enabled,
-      description: `Multi-language support with auto locale detection. Default: ${features.i18n.defaultLocale}`,
-    },
-    {
-      name: 'Forms & Validation',
-      enabled: features.forms.enabled,
-      description: 'React Hook Form + Zod schema validation with ready-made input components.',
-    },
-    {
-      name: 'Deep Linking',
-      enabled: features.deepLinking.enabled,
-      description: `URL scheme routing via expo-router. Scheme: ${basekitConfig.app.scheme}://`,
-    },
-    {
-      name: 'OTA Updates',
-      enabled: features.otaUpdates.enabled,
-      description: 'Check for and apply over-the-air updates without app store resubmission.',
-    },
-    {
-      name: 'Onboarding',
-      enabled: features.onboarding.enabled,
-      description: 'Swipeable onboarding flow with persisted completion state.',
-    },
-    {
-      name: 'Splash & App Icon',
-      enabled: features.splashAppIcon.enabled,
-      description: 'Splash screen timing control and app icon configuration helpers.',
-    },
+  const f = basekitConfig.features as Record<string, { enabled?: boolean; provider?: string; defaultLocale?: string } | undefined>;
+  const allFeatures: Array<{ key: string; name: string; description: string }> = [
+    { key: 'auth', name: 'Authentication', description: 'Sign in, sign up, password reset, and session management with swappable providers.' },
+    { key: 'analytics', name: 'Analytics', description: 'Track events, screen views, and user properties across your app.' },
+    { key: 'crashReporting', name: 'Crash Reporting', description: 'Capture exceptions, breadcrumbs, and error context in production.' },
+    { key: 'notifications', name: 'Push Notifications', description: 'Request permissions, get push tokens, send local notifications, and handle responses.' },
+    { key: 'offlineStorage', name: 'Offline Storage', description: 'Persistent key-value storage with MMKV or AsyncStorage backends.' },
+    { key: 'i18n', name: 'Internationalization', description: 'Multi-language support with auto locale detection.' },
+    { key: 'forms', name: 'Forms & Validation', description: 'React Hook Form + Zod schema validation with ready-made input components.' },
+    { key: 'deepLinking', name: 'Deep Linking', description: `URL scheme routing via expo-router. Scheme: ${basekitConfig.app?.scheme ?? 'myapp'}://` },
+    { key: 'otaUpdates', name: 'OTA Updates', description: 'Check for and apply over-the-air updates without app store resubmission.' },
+    { key: 'onboarding', name: 'Onboarding', description: 'Swipeable onboarding flow with persisted completion state.' },
+    { key: 'splashAppIcon', name: 'Splash & App Icon', description: 'Splash screen timing control and app icon configuration helpers.' },
+    { key: 'security', name: 'Security', description: 'Biometric auth, secure token storage, app lock, and SSL certificate pinning.' },
+    { key: 'theme', name: 'Theme System', description: 'Design tokens, color scales, typography, and theme presets.' },
   ];
+
+  return allFeatures
+    .filter((feat) => f[feat.key]?.enabled)
+    .map((feat) => ({
+      name: feat.name,
+      enabled: true,
+      provider: f[feat.key]?.provider,
+      description: feat.description,
+    }));
 }
 
 function FeatureBadge({ enabled }: { enabled: boolean }) {
@@ -95,7 +57,6 @@ function FeatureBadge({ enabled }: { enabled: boolean }) {
 
 export default function ExploreScreen() {
   const features = getFeatures();
-  const enabledCount = features.filter((f) => f.enabled).length;
 
   return (
     <ParallaxScrollView
@@ -115,8 +76,8 @@ export default function ExploreScreen() {
       </ThemedView>
 
       <ThemedText>
-        This starter kit includes {features.length} plug-and-play features.{' '}
-        <ThemedText type="defaultSemiBold">{enabledCount}</ThemedText> are currently enabled.
+        Your app has{' '}
+        <ThemedText type="defaultSemiBold">{features.length}</ThemedText> features enabled.
       </ThemedText>
 
       <ThemedText className="text-sm text-gray-500 dark:text-gray-400 mt-1">
