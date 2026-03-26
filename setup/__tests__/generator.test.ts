@@ -74,12 +74,13 @@ describe('resolveFeaturesToStrip', () => {
     expect(result.routesToRemove).toContain('src/app/(auth)/');
   });
 
-  it('should collect all files from removed features', () => {
+  it('should collect entire feature directory for removed features', () => {
     const selected = { auth: 'amplify' };
     const result = resolveFeaturesToStrip(testManifest, selected);
 
     expect(result.filesToRemove).toContain('src/features/analytics/');
-    expect(result.filesToRemove).toContain('src/features/analytics/providers/amplify.ts');
+    expect(result.filesToRemove).toContain('src/services/analytics.interface.ts');
+    expect(result.filesToRemove).toContain('src/types/analytics.types.ts');
   });
 });
 

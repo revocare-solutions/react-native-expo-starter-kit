@@ -41,11 +41,12 @@ export function resolveFeaturesToStrip(
   for (const [featureName, feature] of Object.entries(manifest.features)) {
     if (!(featureName in selectedFeatures)) {
       featuresToRemove.push(featureName);
-      filesToRemove.push(...feature.sharedFiles);
+      // Delete the entire feature directory instead of individual files
+      filesToRemove.push(`src/features/${featureName}/`);
+      // Also remove related service interface and types files
+      filesToRemove.push(`src/services/${featureName}.interface.ts`);
+      filesToRemove.push(`src/types/${featureName}.types.ts`);
       routesToRemove.push(...feature.routes);
-      for (const provider of Object.values(feature.providers)) {
-        filesToRemove.push(...provider.files);
-      }
     } else {
       const selectedProvider = selectedFeatures[featureName];
       for (const [providerName, provider] of Object.entries(feature.providers)) {
