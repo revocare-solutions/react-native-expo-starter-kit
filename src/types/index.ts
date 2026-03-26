@@ -12,3 +12,11 @@ export type {
   PinningConfig,
   PinningPin,
 } from './security.types';
+export type {
+  ThemeConfig,
+  ColorScale,
+  SemanticColors,
+  SurfaceColors,
+  TypographyEntry,
+  ShadowEntry,
+} from './theme.types';
