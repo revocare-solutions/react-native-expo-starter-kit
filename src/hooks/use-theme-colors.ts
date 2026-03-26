@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { ThemeContext } from '@/features/theme/hooks/use-theme';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { FONT_FAMILY_MAP } from '@/features/theme/font-map';
 
 /**
  * Returns theme-aware colors. Uses the theme system when available,
@@ -14,6 +15,13 @@ export function useThemeColors() {
   if (themeCtx) {
     const mode = themeCtx.mode;
     const c = themeCtx.config.colors;
+    const sansFamily = themeCtx.config.typography.fontFamily.sans;
+    const fonts = FONT_FAMILY_MAP[sansFamily] ?? {
+      regular: undefined,
+      semiBold: undefined,
+      bold: undefined,
+    };
+
     return {
       text: c.surface[mode].background === '#ffffff' ? '#11181C' : '#ECEDEE',
       background: c.surface[mode].background,
@@ -25,6 +33,7 @@ export function useThemeColors() {
       secondary: c.secondary,
       accent: c.accent,
       semantic: c.semantic,
+      fonts,
       mode,
       isDark: mode === 'dark',
     };
@@ -43,6 +52,7 @@ export function useThemeColors() {
     secondary: null,
     accent: null,
     semantic: null,
+    fonts: { regular: undefined, semiBold: undefined, bold: undefined },
     mode: colorScheme,
     isDark: colorScheme === 'dark',
   };
