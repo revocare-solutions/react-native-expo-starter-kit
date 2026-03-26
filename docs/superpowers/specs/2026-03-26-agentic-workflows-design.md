@@ -324,11 +324,199 @@ Pre-configured permissions so common commands don't prompt:
 
 ---
 
-## 8. Quick Mode Defaults
+## 8. Integration with Setup Wizard
+
+### Step Sequence
+
+Workflow generation inserts into the existing setup flow at step 8.5 — after theme handling, before pnpm install:
+
+1. Update app.json
+2. Strip feature files
+3. Rewrite service factories
+4. Rewrite app-providers.tsx
+5. Update config
+6. Clean package.json
+7. Update .env.example
+8. Handle theme
+9. **Generate workflow files** (new step)
+10. pnpm install
+11. Self-destruct (removes `setup/` including `setup/workflows/`)
+12. Git commit
+
+This ordering ensures the generators can read the already-stripped codebase to produce accurate output, and the `setup/workflows/` source is still available.
+
+### YAML Config File (`--from`) Extension
+
+```yaml
+# basekit.scaffold.yaml
+app:
+  name: my-app
+  bundleId: com.acme.myapp
+  scheme: myapp
+theme: corporate
+backend: supabase
+features:
+  - auth
+  - analytics
+  - security
+workflow: agentic
+agents:
+  - claude-code
+commands:
+  - add-feature
+  - new-screen
+  - add-provider
+  - run-checks
+  - evaluate
+```
+
+If `workflow` is omitted, defaults to `manual`. If `agents` or `commands` are omitted when `workflow: agentic`, uses all available.
+
+### Quick Mode Defaults
 
 `pnpm run setup --quick` defaults:
 - workflow: `manual`
 - agents: `[]`
 - commands: `[]`
 
-This keeps quick mode fast — no workflow file generation. Developers can add agentic workflows later by manually creating CLAUDE.md or running the evaluate pattern.
+### `getQuickDefaults()` Update
+
+```typescript
+export function getQuickDefaults(): SetupAnswers {
+  return {
+    // ... existing fields
+    workflow: 'manual',
+    agents: [],
+    commands: [],
+  };
+}
+```
+
+---
+
+## 9. Settings Permissions
+
+Generated `.claude/settings.json` uses granular permissions matching Claude Code conventions:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm lint)",
+      "Bash(pnpm test)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm typecheck)",
+      "Bash(pnpm start)",
+      "Bash(pnpm start:*)",
+      "Bash(git status*)",
+      "Bash(git log*)",
+      "Bash(git diff*)",
+      "Bash(git branch*)",
+      "Bash(git checkout*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
+      "Bash(git push*)",
+      "Bash(git pull*)",
+      "Bash(git fetch*)",
+      "Bash(gh issue*)",
+      "Bash(gh pr*)"
+    ]
+  }
+}
+```
+
+Note: This is the settings for the **scaffolded project**, not for this repo. The Basekit repo itself has its own `.claude/settings.json` which is distinct.
+
+---
+
+## 10. Command Availability Logic
+
+### `add-provider` Conditional
+
+The `/add-provider` command requires at least one feature with swappable providers to be present. This cannot be expressed as a simple `requiredFeatures` string array.
+
+```typescript
+interface CommandDefinition {
+  id: string;
+  name: string;
+  description: string;
+  templateFile: string;
+  condition?: (selectedFeatures: Record<string, string>, manifest: Manifest) => boolean;
+}
+```
+
+For `add-provider`:
+```typescript
+{
+  id: 'add-provider',
+  condition: (selected, manifest) =>
+    Object.keys(selected).some((f) => {
+      const feature = manifest.features[f];
+      return feature && Object.keys(feature.providers).length > 0;
+    }),
+}
+```
+
+Commands without a `condition` are always available (if selected by the user).
+
+---
+
+## 11. Template Interpolation
+
+Templates use simple `{{variable}}` placeholders processed by string replacement. No template library needed — the generators do:
+
+```typescript
+function renderTemplate(template: string, vars: Record<string, string>): string {
+  return template.replace(/\{\{(\w+)\}\}/g, (_, key) => vars[key] ?? '');
+}
+```
+
+Variables available to templates:
+- `{{appName}}` — from setup answers
+- `{{bundleId}}` — from setup answers
+- `{{scheme}}` — from setup answers
+- `{{features}}` — comma-separated list of enabled features
+- `{{provider:featureName}}` — selected provider for a feature
+
+Feature guide sections use a different approach — they are generated programmatically from the `FeatureSectionDefinition` registry, not from templates with conditionals.
+
+---
+
+## 12. `.gitignore` Handling
+
+The `.claude/` directory should be committed to the scaffolded project — it's part of the developer experience. It is NOT added to `.gitignore`.
+
+In manual mode, no `.claude/` directory is created, so nothing to manage.
+
+---
+
+## 13. Drift Prevention Between Setup Generators and /evaluate
+
+The `/evaluate` command is the **canonical source of truth** for workflow file structure. The TypeScript generators in `setup/workflows/` are written to follow the same rules defined in the evaluate command's template.
+
+To verify parity, the implementation should include an integration test that:
+1. Runs setup with agentic mode
+2. Runs `/evaluate` (simulated by calling the same scan + generate logic)
+3. Asserts the output matches what setup produced
+
+---
+
+## 14. Feature Section Registry (All Features)
+
+Complete registry entries for all features:
+
+| Feature | Key Files | Guidance |
+|---------|-----------|----------|
+| auth | auth-provider.tsx, create-auth-service.ts, services/auth.interface.ts | Add providers in providers/, implement AuthService interface |
+| analytics | analytics-provider.tsx, create-analytics-service.ts, services/analytics.interface.ts | Track events via useAnalytics(), add providers following amplify.ts pattern |
+| crash-reporting | crash-reporting-provider.tsx, services/crash-reporting.interface.ts | Capture errors via useCrashReporting(), Sentry provider at providers/sentry.ts |
+| notifications | notification-provider.tsx, services/notifications.interface.ts | Request permissions, send local notifications via useNotifications() |
+| offline-storage | storage-provider.tsx, create-storage-service.ts, services/storage.interface.ts | Key-value storage via useStorage(), MMKV or AsyncStorage providers |
+| i18n | i18n-provider.tsx, i18n.ts, locales/en.json | Add translations in locales/, use useAppTranslation() hook |
+| forms | hooks/use-app-form.ts, components/form-input.tsx, schemas/common.ts | Zod schemas in schemas/, form components in components/ |
+| security | security-provider.tsx, hooks/use-biometrics.ts, hooks/use-app-lock.ts, config/pinning.ts | Biometrics via useBiometrics(), secure storage via useSecureStorage(), SSL config in config/pinning.ts |
+| theme | theme-provider.tsx, hooks/use-theme.ts, utils/generate-tailwind.ts, config/theme.config.ts | Edit theme.config.ts to change tokens, useTheme() for runtime values, Tailwind classes auto-update |
+| onboarding | hooks/use-onboarding.ts, components/onboarding-screen.tsx | Completion persisted in Zustand store, check useOnboarding().shouldShow |
+| deep-linking | hooks/use-deep-link.ts, utils/build-deep-link.ts | Monitor incoming URLs via useDeepLink(), build links with buildDeepLink() |
+| ota-updates | hooks/use-ota-updates.ts | Check and apply updates via useOtaUpdates() |
+| splash-app-icon | hooks/use-splash-screen.ts | Control splash visibility via useSplashScreen() |
