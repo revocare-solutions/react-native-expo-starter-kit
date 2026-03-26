@@ -7,9 +7,10 @@ A production-ready React Native starter kit built on Expo SDK 54. Clone it, run 
 ## Quick Start
 
 ```bash
-# Clone or use as GitHub template
-gh repo create my-app --template revocare-solutions/react-native-expo-starter-kit
+# Clone
+git clone https://github.com/revocare-solutions/react-native-expo-starter-kit.git my-app
 cd my-app
+pnpm install
 
 # Run the setup wizard
 pnpm setup
