@@ -64,6 +64,47 @@ export function updateEnvExample(content: string, keepVars: string[]): string {
   return result.join('\n').trim() + '\n';
 }
 
+export async function rewriteServiceFactory(
+  filePath: string,
+  removedProviders: string[],
+): Promise<void> {
+  if (!(await fs.pathExists(filePath))) return;
+
+  const content = await fs.readFile(filePath, 'utf-8');
+  const lines = content.split('\n');
+  const result: string[] = [];
+  let skipUntilNextEntry = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmed = line.trim();
+
+    // Check if this line starts a provider entry we want to remove
+    const isProviderLine = removedProviders.some((p) => {
+      const escaped = p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      return new RegExp(`^['"]?${escaped}['"]?\\s*:`).test(trimmed);
+    });
+
+    if (isProviderLine) {
+      // Skip this line and any continuation lines (lines that don't start a new entry or close the map)
+      skipUntilNextEntry = !trimmed.endsWith(',');
+      continue;
+    }
+
+    if (skipUntilNextEntry) {
+      // Keep skipping until we find a line ending with comma (end of the entry)
+      if (trimmed.endsWith(',')) {
+        skipUntilNextEntry = false;
+      }
+      continue;
+    }
+
+    result.push(line);
+  }
+
+  await fs.writeFile(filePath, result.join('\n'));
+}
+
 export async function updateAppJson(
   projectRoot: string,
   appName: string,
