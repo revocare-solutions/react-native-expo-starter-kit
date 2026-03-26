@@ -108,8 +108,8 @@ Maps features to their files, dependencies, and provider chain position:
   "features": {
     "auth": {
       "displayName": "Authentication",
+      "description": "Sign in, sign up, password reset, session management",
       "category": "auth",
-      "exclusive": true,
       "providers": {
         "amplify": {
           "files": ["src/features/auth/providers/amplify.ts"],
@@ -148,7 +148,6 @@ Maps features to their files, dependencies, and provider chain position:
         "src/features/auth/auth-provider.tsx",
         "src/features/auth/auth-context.ts",
         "src/features/auth/create-auth-service.ts",
-        "src/features/auth/no-op-auth.ts",
         "src/features/auth/hooks/",
         "src/features/auth/__tests__/"
       ],
@@ -164,8 +163,8 @@ Maps features to their files, dependencies, and provider chain position:
     },
     "security": {
       "displayName": "Security",
+      "description": "Biometrics, secure storage, SSL certificate pinning",
       "category": "security",
-      "exclusive": false,
       "providers": {},
       "sharedFiles": [
         "src/features/security/"
@@ -185,8 +184,8 @@ Maps features to their files, dependencies, and provider chain position:
     },
     "theme": {
       "displayName": "Theme System",
+      "description": "Design tokens, color scales, typography, presets",
       "category": "theme",
-      "exclusive": true,
       "providers": {
         "minimal": {
           "files": ["src/features/theme/presets/minimal.ts", "assets/fonts/inter/"],
@@ -218,11 +217,6 @@ Maps features to their files, dependencies, and provider chain position:
       "routes": []
     }
   },
-  "featureDependencies": {
-    "notifications": ["auth"],
-    "payments": ["auth"],
-    "onboarding": ["offline-storage"]
-  },
   "categories": {
     "auth": { "exclusive": true, "label": "Authentication" },
     "analytics": { "exclusive": true, "label": "Analytics" },
@@ -236,7 +230,7 @@ Maps features to their files, dependencies, and provider chain position:
     "onboarding": { "exclusive": false, "label": "Onboarding" },
     "ota-updates": { "exclusive": false, "label": "OTA Updates" },
     "deep-linking": { "exclusive": false, "label": "Deep Linking" },
-    "payments": { "exclusive": true, "label": "Payments" }
+    "payments": { "exclusive": true, "label": "Payments (planned)" }
   }
 }
 ```
@@ -351,17 +345,27 @@ Note: `basekit.scaffold.yaml` is the setup input config. This is distinct from `
 2. **Strips unselected features** — deletes entire feature directories for features not chosen
 3. **Strips unselected providers** — within selected features, deletes provider files for backends not chosen (e.g., if Firebase selected, delete `providers/amplify.ts`, `providers/supabase.ts`)
 4. **Rewrites `app-providers.tsx`** — regenerates the provider chain with only selected feature providers, in correct nesting order
-5. **Updates `basekit.config.ts`** — sets enabled/disabled flags and provider names
+5. **Rewrites `basekit.config.ts`** — generates config with only selected features (stripped features are omitted entirely, not set to `enabled: false`)
 6. **Updates `app.json`** — injects app name, bundle ID, scheme
-7. **Cleans `package.json`** — removes dependencies belonging to stripped features
+7. **Cleans `package.json`** — removes dependencies belonging to stripped features and setup-only devDependencies (`@clack/prompts`, `fs-extra`, `yaml`, `execa`, `picocolors`)
 8. **Updates `.env.example`** — keeps only env vars for selected features
-9. **Strips unused routes** — removes `(auth)/` route group if auth not selected
-10. **Applies theme preset** — copies preset values into `theme.config.ts`, deletes other presets
+9. **Strips unused routes** — removes route groups for unselected features (e.g., `(auth)/` if auth not selected)
+10. **Applies theme preset** — if theme selected, copies preset values into `theme.config.ts`, deletes other presets and `constants/theme.ts`. If theme NOT selected, removes `theme.config.ts` and leaves `constants/theme.ts` as-is; reverts `tailwind.config.js` to basic config without theme token imports
 11. **Runs `pnpm install`** — clean install with reduced dependencies
 12. **Self-destructs** — deletes `setup/` directory and `basekit.manifest.json`
 13. **Commits** — creates "Initial project setup" commit
 
+A `--dry-run` flag is supported to preview what would be stripped without modifying any files.
+
 After setup, no trace of the wizard remains. The project is a clean, standalone Expo app.
+
+### Recovery
+
+If the setup script fails mid-execution:
+- No files have been committed yet (commit is the last step)
+- `git checkout . && git clean -fd` restores the original state completely
+- `pnpm install` restores `node_modules` from the original `package.json`
+- The user can re-run `pnpm setup` from scratch
 
 ### 2.5 Setup Tech Stack
 
@@ -677,10 +681,7 @@ Categories marked `exclusive: true` in the manifest allow only one provider. The
 
 ### Setup failure recovery
 
-If the setup script fails mid-execution:
-- No files have been committed yet (commit happens last)
-- The user can `git checkout .` to restore the original state
-- The user can re-run `pnpm setup` from scratch
+See Section 2.4 "Recovery" for details. In short: commit is the last step, so `git checkout . && git clean -fd` followed by `pnpm install` restores the original state completely.
 
 ### Missing environment variables
 
