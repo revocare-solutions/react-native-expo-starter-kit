@@ -117,7 +117,7 @@ async function main() {
     }
   }
 
-  const depsToRemove = collectDepsToRemove(manifest, stripResult.featuresToRemove, removedProviderDeps);
+  const depsToRemove = collectDepsToRemove(manifest, stripResult.featuresToRemove, removedProviderDeps, answers.features);
   const envVarsToKeep = collectEnvVarsToKeep(manifest, answers.features);
 
   // Dry run

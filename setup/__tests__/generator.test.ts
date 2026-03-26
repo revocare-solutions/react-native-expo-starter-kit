@@ -85,24 +85,33 @@ describe('resolveFeaturesToStrip', () => {
 
 describe('collectDepsToRemove', () => {
   it('should collect deps from removed features', () => {
-    const result = collectDepsToRemove(testManifest, ['analytics'], {});
-    // analytics has no provider-specific deps in this test manifest, but the function should not crash
+    const result = collectDepsToRemove(testManifest, ['analytics'], {}, { auth: 'amplify' });
     expect(Array.isArray(result)).toBe(true);
   });
 
-  it('should collect deps from removed providers', () => {
+  it('should collect deps from removed providers when no selected feature needs them', () => {
     const removedProviderDeps: Record<string, boolean> = { 'aws-amplify': true };
-    const result = collectDepsToRemove(testManifest, [], removedProviderDeps);
+    // No selected features use aws-amplify, so it should be removed
+    const result = collectDepsToRemove(testManifest, [], removedProviderDeps, {});
 
     expect(result).toContain('aws-amplify');
   });
 
-  it('should combine feature and provider deps without duplicates', () => {
-    const removedProviderDeps: Record<string, boolean> = { 'aws-amplify': true };
-    const result = collectDepsToRemove(testManifest, ['auth'], removedProviderDeps);
+  it('should NOT remove deps that a selected feature still needs', () => {
+    // analytics is removed (has aws-amplify as a dep via its amplify provider)
+    // but auth is selected with amplify provider (also needs aws-amplify)
+    const result = collectDepsToRemove(testManifest, ['analytics'], {}, { auth: 'amplify' });
 
-    // aws-amplify should appear only once even though it's from both sources
-    expect(result.filter((d) => d === 'aws-amplify').length).toBe(1);
+    // aws-amplify should NOT be removed because auth-amplify still needs it
+    expect(result).not.toContain('aws-amplify');
+  });
+
+  it('should remove deps when no selected feature needs them', () => {
+    // auth is removed, firebase provider deps should be removed since nothing else uses them
+    const result = collectDepsToRemove(testManifest, ['auth'], {}, { analytics: 'amplify' });
+
+    expect(result).toContain('@react-native-firebase/auth');
+    expect(result).toContain('aws-amplify');
   });
 });
 
