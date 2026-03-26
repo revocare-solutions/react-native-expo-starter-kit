@@ -16,6 +16,8 @@ export interface BasekitConfig {
     deepLinking: { enabled: boolean };
     splashAppIcon: { enabled: boolean };
     forms: { enabled: boolean };
+    security: { enabled: boolean };
+    theme: { enabled: boolean; preset: 'minimal' | 'bold' | 'corporate' };
   };
   api: {
     baseUrl: string | undefined;
@@ -42,6 +44,8 @@ export const basekitConfig: BasekitConfig = {
     deepLinking: { enabled: true },
     splashAppIcon: { enabled: true },
     forms: { enabled: true },
+    security: { enabled: true },
+    theme: { enabled: true, preset: 'minimal' },
   },
 
   api: {
