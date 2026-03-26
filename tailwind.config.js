@@ -1,10 +1,15 @@
+const { createJiti } = require("jiti");
+const jiti = createJiti(__filename);
+
+const { generateTailwindTheme } = jiti("./src/features/theme/utils/generate-tailwind");
+const { themeConfig } = jiti("./src/config/theme.config");
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  // NOTE: Update this to include the paths to all of your component files.
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
   theme: {
-    extend: {},
+    extend: generateTailwindTheme(themeConfig),
   },
   plugins: [],
 };

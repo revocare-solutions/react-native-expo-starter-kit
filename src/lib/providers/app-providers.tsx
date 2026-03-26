@@ -9,6 +9,8 @@ import { CrashReportingProvider } from '@/features/crash-reporting';
 import { AnalyticsProvider } from '@/features/analytics';
 import { I18nProvider } from '@/features/i18n';
 import { NotificationProvider } from '@/features/notifications';
+import { SecurityProvider } from '@/features/security';
+import { BasekitThemeProvider } from '@/features/theme';
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   const colorScheme = useColorScheme();
@@ -18,25 +20,28 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
   }, []);
 
   // Provider ordering (spec-defined, dependency-aware):
-  // SafeArea → Theme → QueryClient → OfflineStorage → Auth → Analytics → CrashReporting → i18n → Notifications → ...children
-  // Future tasks will add providers in this exact order.
+  // SafeArea → Theme → BasekitTheme → QueryClient → OfflineStorage → Security → Auth → Analytics → CrashReporting → i18n → Notifications → ...children
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <QueryProvider>
-        <StorageProvider>
-          <AuthProvider>
-            <AnalyticsProvider>
-              <CrashReportingProvider>
-                <I18nProvider>
-                  <NotificationProvider>
-                    {children}
-                  </NotificationProvider>
-                </I18nProvider>
-              </CrashReportingProvider>
-            </AnalyticsProvider>
-          </AuthProvider>
-        </StorageProvider>
-      </QueryProvider>
+      <BasekitThemeProvider>
+        <QueryProvider>
+          <StorageProvider>
+            <SecurityProvider>
+              <AuthProvider>
+                <AnalyticsProvider>
+                  <CrashReportingProvider>
+                    <I18nProvider>
+                      <NotificationProvider>
+                        {children}
+                      </NotificationProvider>
+                    </I18nProvider>
+                  </CrashReportingProvider>
+                </AnalyticsProvider>
+              </AuthProvider>
+            </SecurityProvider>
+          </StorageProvider>
+        </QueryProvider>
+      </BasekitThemeProvider>
     </ThemeProvider>
   );
 }
