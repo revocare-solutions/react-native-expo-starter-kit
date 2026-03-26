@@ -6,7 +6,7 @@ import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 
 function QuickStartStep({
   number,
@@ -60,7 +60,7 @@ export default function HomeScreen() {
 
       <View className="bg-blue-500 p-4 rounded-xl my-2">
         <ThemedText className="text-white font-bold text-center text-base">
-          {starterConfig.app.name} — Ready to build
+          {basekitConfig.app.name} — Ready to build
         </ThemedText>
       </View>
 
@@ -86,7 +86,7 @@ export default function HomeScreen() {
       <QuickStartStep number="1" title="Configure">
         <ThemedText>
           Open{' '}
-          <ThemedText type="defaultSemiBold">src/config/starter.config.ts</ThemedText> and toggle
+          <ThemedText type="defaultSemiBold">src/config/basekit.config.ts</ThemedText> and toggle
           features, choose providers, and set your app name.
         </ThemedText>
       </QuickStartStep>
@@ -106,7 +106,7 @@ export default function HomeScreen() {
           <Link href="/(tabs)/explore">
             <ThemedText type="link">Explore tab</ThemedText>
           </Link>{' '}
-          to see all {Object.keys(starterConfig.features).length} features with their current
+          to see all {Object.keys(basekitConfig.features).length} features with their current
           status and providers.
         </ThemedText>
       </QuickStartStep>

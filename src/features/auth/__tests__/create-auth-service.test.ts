@@ -6,8 +6,8 @@ describe('createAuthService', () => {
   });
 
   it('returns noOpAuth when feature is disabled', async () => {
-    jest.mock('@/config/starter.config', () => ({
-      starterConfig: {
+    jest.mock('@/config/basekit.config', () => ({
+      basekitConfig: {
         features: {
           auth: { enabled: false, provider: 'amplify' },
         },
@@ -33,8 +33,8 @@ describe('createAuthService', () => {
   it('falls back to noOpAuth for unknown provider', async () => {
     const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
-    jest.mock('@/config/starter.config', () => ({
-      starterConfig: {
+    jest.mock('@/config/basekit.config', () => ({
+      basekitConfig: {
         features: {
           auth: { enabled: true, provider: 'unknown-provider' },
         },

@@ -1,10 +1,10 @@
 import { renderHook, act } from '@testing-library/react-native';
 import { useOnboarding } from '../hooks/use-onboarding';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 import { useAppStore } from '@/store/app-store';
 
-jest.mock('@/config/starter.config', () => ({
-  starterConfig: {
+jest.mock('@/config/basekit.config', () => ({
+  basekitConfig: {
     features: { onboarding: { enabled: true } },
   },
 }));
@@ -17,7 +17,7 @@ jest.mock('@/store/app-store', () => ({
 
 const mockUseAppStore = useAppStore as unknown as jest.Mock;
 
-const mockConfig = starterConfig as {
+const mockConfig = basekitConfig as {
   features: { onboarding: { enabled: boolean } };
 };
 

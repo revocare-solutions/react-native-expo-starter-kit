@@ -5,7 +5,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Collapsible } from '@/components/ui/collapsible';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 import { Fonts } from '@/constants/theme';
 
 interface FeatureItem {
@@ -16,7 +16,7 @@ interface FeatureItem {
 }
 
 function getFeatures(): FeatureItem[] {
-  const { features } = starterConfig;
+  const { features } = basekitConfig;
   return [
     {
       name: 'Authentication',
@@ -61,7 +61,7 @@ function getFeatures(): FeatureItem[] {
     {
       name: 'Deep Linking',
       enabled: features.deepLinking.enabled,
-      description: `URL scheme routing via expo-router. Scheme: ${starterConfig.app.scheme}://`,
+      description: `URL scheme routing via expo-router. Scheme: ${basekitConfig.app.scheme}://`,
     },
     {
       name: 'OTA Updates',
@@ -122,7 +122,7 @@ export default function ExploreScreen() {
       <ThemedText className="text-sm text-gray-500 dark:text-gray-400 mt-1">
         Toggle features in{' '}
         <ThemedText type="defaultSemiBold" className="text-sm">
-          src/config/starter.config.ts
+          src/config/basekit.config.ts
         </ThemedText>
       </ThemedText>
 

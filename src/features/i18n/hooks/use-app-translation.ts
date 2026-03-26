@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 
 /**
  * Wrapper around react-i18next's useTranslation hook.
@@ -8,7 +8,7 @@ import { starterConfig } from '@/config/starter.config';
 export function useAppTranslation(ns?: string) {
   const translation = useTranslation(ns);
 
-  if (!starterConfig.features.i18n.enabled) {
+  if (!basekitConfig.features.i18n.enabled) {
     return {
       ...translation,
       t: ((key: string) => key) as typeof translation.t,

@@ -1,5 +1,5 @@
 import type { NotificationService } from '@/services/notifications.interface';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 import { noOpNotifications } from './no-op-notifications';
 
 const providers: Record<string, () => Promise<NotificationService>> = {
@@ -10,11 +10,11 @@ const providers: Record<string, () => Promise<NotificationService>> = {
 };
 
 export async function createNotificationService(): Promise<NotificationService> {
-  if (!starterConfig.features.notifications.enabled) {
+  if (!basekitConfig.features.notifications.enabled) {
     return noOpNotifications;
   }
 
-  const { provider } = starterConfig.features.notifications;
+  const { provider } = basekitConfig.features.notifications;
   const factory = providers[provider];
   if (!factory) throw new Error(`Unknown notifications provider: ${provider}`);
 

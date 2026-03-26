@@ -1,4 +1,4 @@
-export interface StarterConfig {
+export interface BasekitConfig {
   app: {
     name: string;
     bundleId: string;
@@ -16,6 +16,8 @@ export interface StarterConfig {
     deepLinking: { enabled: boolean };
     splashAppIcon: { enabled: boolean };
     forms: { enabled: boolean };
+    security: { enabled: boolean };
+    theme: { enabled: boolean; preset: 'minimal' | 'bold' | 'corporate' };
   };
   api: {
     baseUrl: string | undefined;
@@ -23,7 +25,7 @@ export interface StarterConfig {
   };
 }
 
-export const starterConfig: StarterConfig = {
+export const basekitConfig: BasekitConfig = {
   app: {
     name: 'MyApp',
     bundleId: 'com.mycompany.myapp',
@@ -42,6 +44,8 @@ export const starterConfig: StarterConfig = {
     deepLinking: { enabled: true },
     splashAppIcon: { enabled: true },
     forms: { enabled: true },
+    security: { enabled: true },
+    theme: { enabled: true, preset: 'minimal' },
   },
 
   api: {

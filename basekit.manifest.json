@@ -1,0 +1,458 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12",
+  "version": "1.0.0",
+  "categories": {
+    "auth": {
+      "label": "Authentication",
+      "exclusive": true
+    },
+    "monitoring": {
+      "label": "Monitoring & Analytics",
+      "exclusive": false
+    },
+    "storage": {
+      "label": "Storage",
+      "exclusive": true
+    },
+    "ux": {
+      "label": "User Experience",
+      "exclusive": false
+    },
+    "infrastructure": {
+      "label": "Infrastructure",
+      "exclusive": false
+    }
+  },
+  "features": {
+    "auth": {
+      "displayName": "Authentication",
+      "description": "User sign-in, sign-up, password reset, and session management",
+      "category": "auth",
+      "providers": {
+        "amplify": {
+          "files": [
+            "src/features/auth/providers/amplify.ts",
+            "src/lib/amplify/configure.ts"
+          ],
+          "dependencies": {
+            "aws-amplify": "^6.16.3",
+            "@aws-amplify/react-native": "^1.3.3",
+            "amazon-cognito-identity-js": "^6.3.16"
+          },
+          "envVars": {
+            "required": [
+              "EXPO_PUBLIC_COGNITO_USER_POOL_ID",
+              "EXPO_PUBLIC_COGNITO_CLIENT_ID"
+            ],
+            "optional": [
+              "EXPO_PUBLIC_COGNITO_IDENTITY_POOL_ID"
+            ]
+          }
+        }
+      },
+      "sharedFiles": [
+        "src/features/auth/auth-context.ts",
+        "src/features/auth/auth-provider.tsx",
+        "src/features/auth/create-auth-service.ts",
+        "src/features/auth/hooks/use-auth.ts",
+        "src/features/auth/hooks/use-current-user.ts",
+        "src/features/auth/hooks/use-session.ts",
+        "src/features/auth/index.ts",
+        "src/features/auth/no-op-auth.ts",
+        "src/features/auth/__tests__/create-auth-service.test.ts",
+        "src/features/auth/__tests__/no-op-auth.test.ts"
+      ],
+      "sharedDependencies": {},
+      "requires": [],
+      "enhancedBy": ["analytics", "crash-reporting"],
+      "providerChain": {
+        "component": "AuthProvider",
+        "import": "@/features/auth",
+        "order": 50
+      },
+      "routes": [
+        "src/app/(auth)/"
+      ]
+    },
+    "analytics": {
+      "displayName": "Analytics",
+      "description": "Event tracking, screen views, and user property attribution",
+      "category": "monitoring",
+      "providers": {
+        "amplify": {
+          "files": [
+            "src/features/analytics/providers/amplify.ts"
+          ],
+          "dependencies": {
+            "aws-amplify": "^6.16.3",
+            "@aws-amplify/react-native": "^1.3.3"
+          },
+          "envVars": {
+            "required": [
+              "EXPO_PUBLIC_COGNITO_USER_POOL_ID",
+              "EXPO_PUBLIC_COGNITO_CLIENT_ID"
+            ],
+            "optional": [
+              "EXPO_PUBLIC_COGNITO_IDENTITY_POOL_ID"
+            ]
+          }
+        }
+      },
+      "sharedFiles": [
+        "src/features/analytics/analytics-provider.tsx",
+        "src/features/analytics/create-analytics-service.ts",
+        "src/features/analytics/hooks/use-analytics.ts",
+        "src/features/analytics/index.ts",
+        "src/features/analytics/no-op-analytics.ts",
+        "src/features/analytics/__tests__/analytics.test.ts"
+      ],
+      "sharedDependencies": {},
+      "requires": [],
+      "enhancedBy": ["auth"],
+      "providerChain": {
+        "component": "AnalyticsProvider",
+        "import": "@/features/analytics",
+        "order": 60
+      },
+      "routes": []
+    },
+    "crash-reporting": {
+      "displayName": "Crash Reporting",
+      "description": "Exception capture, breadcrumbs, and user context for crash diagnostics",
+      "category": "monitoring",
+      "providers": {
+        "sentry": {
+          "files": [
+            "src/features/crash-reporting/providers/sentry.ts"
+          ],
+          "dependencies": {
+            "@sentry/react-native": "*"
+          },
+          "envVars": {
+            "required": [
+              "EXPO_PUBLIC_SENTRY_DSN"
+            ],
+            "optional": []
+          }
+        }
+      },
+      "sharedFiles": [
+        "src/features/crash-reporting/crash-reporting-provider.tsx",
+        "src/features/crash-reporting/create-crash-reporting-service.ts",
+        "src/features/crash-reporting/hooks/use-crash-reporting.ts",
+        "src/features/crash-reporting/index.ts",
+        "src/features/crash-reporting/no-op-crash-reporting.ts",
+        "src/features/crash-reporting/__tests__/crash-reporting.test.ts"
+      ],
+      "sharedDependencies": {},
+      "requires": [],
+      "enhancedBy": ["auth"],
+      "providerChain": {
+        "component": "CrashReportingProvider",
+        "import": "@/features/crash-reporting",
+        "order": 70
+      },
+      "routes": []
+    },
+    "notifications": {
+      "displayName": "Push Notifications",
+      "description": "Local and push notification scheduling, permission handling, and event listeners",
+      "category": "ux",
+      "providers": {
+        "amplify": {
+          "files": [
+            "src/features/notifications/providers/amplify.ts"
+          ],
+          "dependencies": {
+            "aws-amplify": "^6.16.3",
+            "@aws-amplify/react-native": "^1.3.3",
+            "expo-notifications": "*"
+          },
+          "envVars": {
+            "required": [
+              "EXPO_PUBLIC_COGNITO_USER_POOL_ID",
+              "EXPO_PUBLIC_COGNITO_CLIENT_ID"
+            ],
+            "optional": []
+          }
+        }
+      },
+      "sharedFiles": [
+        "src/features/notifications/create-notification-service.ts",
+        "src/features/notifications/hooks/use-notifications.ts",
+        "src/features/notifications/index.ts",
+        "src/features/notifications/no-op-notifications.ts",
+        "src/features/notifications/notification-provider.tsx",
+        "src/features/notifications/__tests__/notifications.test.ts"
+      ],
+      "sharedDependencies": {},
+      "requires": [],
+      "enhancedBy": ["auth"],
+      "providerChain": {
+        "component": "NotificationProvider",
+        "import": "@/features/notifications",
+        "order": 90
+      },
+      "routes": []
+    },
+    "i18n": {
+      "displayName": "Internationalisation",
+      "description": "Multi-language support with locale detection and runtime language switching",
+      "category": "ux",
+      "providers": {},
+      "sharedFiles": [
+        "src/features/i18n/hooks/use-app-translation.ts",
+        "src/features/i18n/hooks/use-language.ts",
+        "src/features/i18n/i18n-provider.tsx",
+        "src/features/i18n/i18n.ts",
+        "src/features/i18n/index.ts",
+        "src/features/i18n/locales/en.json",
+        "src/features/i18n/locales/es.json",
+        "src/features/i18n/__tests__/i18n.test.ts"
+      ],
+      "sharedDependencies": {
+        "i18next": "^25.8.18",
+        "react-i18next": "^16.5.8",
+        "expo-localization": "^55.0.8"
+      },
+      "requires": [],
+      "enhancedBy": [],
+      "providerChain": {
+        "component": "I18nProvider",
+        "import": "@/features/i18n",
+        "order": 80
+      },
+      "routes": []
+    },
+    "offline-storage": {
+      "displayName": "Offline Storage",
+      "description": "Persistent key-value storage for caching app data between sessions",
+      "category": "storage",
+      "providers": {
+        "mmkv": {
+          "files": [
+            "src/features/offline-storage/providers/mmkv.ts"
+          ],
+          "dependencies": {
+            "react-native-mmkv": "^4.2.0"
+          },
+          "envVars": {
+            "required": [],
+            "optional": []
+          }
+        },
+        "async-storage": {
+          "files": [
+            "src/features/offline-storage/providers/async-storage.ts"
+          ],
+          "dependencies": {
+            "@react-native-async-storage/async-storage": "^3.0.1"
+          },
+          "envVars": {
+            "required": [],
+            "optional": []
+          }
+        }
+      },
+      "sharedFiles": [
+        "src/features/offline-storage/create-storage-service.ts",
+        "src/features/offline-storage/hooks/use-storage.ts",
+        "src/features/offline-storage/index.ts",
+        "src/features/offline-storage/no-op-storage.ts",
+        "src/features/offline-storage/storage-provider.tsx",
+        "src/features/offline-storage/__tests__/use-storage.test.ts"
+      ],
+      "sharedDependencies": {},
+      "requires": [],
+      "enhancedBy": ["onboarding"],
+      "providerChain": {
+        "component": "StorageProvider",
+        "import": "@/features/offline-storage",
+        "order": 40
+      },
+      "routes": []
+    },
+    "onboarding": {
+      "displayName": "Onboarding",
+      "description": "First-run walkthrough screens with persistent completion tracking",
+      "category": "ux",
+      "providers": {},
+      "sharedFiles": [
+        "src/features/onboarding/components/onboarding-page.tsx",
+        "src/features/onboarding/components/onboarding-screen.tsx",
+        "src/features/onboarding/hooks/use-onboarding.ts",
+        "src/features/onboarding/index.ts",
+        "src/features/onboarding/__tests__/onboarding.test.ts"
+      ],
+      "sharedDependencies": {},
+      "requires": ["offline-storage"],
+      "enhancedBy": [],
+      "providerChain": null,
+      "routes": []
+    },
+    "ota-updates": {
+      "displayName": "OTA Updates",
+      "description": "Over-the-air update checking and silent download/apply via Expo Updates",
+      "category": "infrastructure",
+      "providers": {},
+      "sharedFiles": [
+        "src/features/ota-updates/hooks/use-ota-updates.ts",
+        "src/features/ota-updates/index.ts",
+        "src/features/ota-updates/__tests__/ota-updates.test.ts"
+      ],
+      "sharedDependencies": {
+        "expo-updates": "*"
+      },
+      "requires": [],
+      "enhancedBy": [],
+      "providerChain": null,
+      "routes": []
+    },
+    "deep-linking": {
+      "displayName": "Deep Linking",
+      "description": "Handle incoming URLs and build outbound deep links for the app",
+      "category": "infrastructure",
+      "providers": {},
+      "sharedFiles": [
+        "src/features/deep-linking/hooks/use-deep-link.ts",
+        "src/features/deep-linking/index.ts",
+        "src/features/deep-linking/utils/build-deep-link.ts",
+        "src/features/deep-linking/__tests__/deep-linking.test.ts"
+      ],
+      "sharedDependencies": {
+        "expo-linking": "~8.0.8"
+      },
+      "requires": [],
+      "enhancedBy": [],
+      "providerChain": null,
+      "routes": []
+    },
+    "splash-app-icon": {
+      "displayName": "Splash Screen & App Icon",
+      "description": "Splash screen lifecycle control (prevent auto-hide, hide on ready)",
+      "category": "ux",
+      "providers": {},
+      "sharedFiles": [
+        "src/features/splash-app-icon/hooks/use-splash-screen.ts",
+        "src/features/splash-app-icon/index.ts",
+        "src/features/splash-app-icon/__tests__/splash-app-icon.test.ts"
+      ],
+      "sharedDependencies": {
+        "expo-splash-screen": "~31.0.10"
+      },
+      "requires": [],
+      "enhancedBy": [],
+      "providerChain": null,
+      "routes": []
+    },
+    "forms": {
+      "displayName": "Forms",
+      "description": "Form state management, validation schema helpers, and controlled input components",
+      "category": "ux",
+      "providers": {},
+      "sharedFiles": [
+        "src/features/forms/components/form-checkbox.tsx",
+        "src/features/forms/components/form-input.tsx",
+        "src/features/forms/components/form-select.tsx",
+        "src/features/forms/components/index.ts",
+        "src/features/forms/hooks/use-app-form.ts",
+        "src/features/forms/index.ts",
+        "src/features/forms/schemas/common.ts",
+        "src/features/forms/__tests__/form-input.test.tsx"
+      ],
+      "sharedDependencies": {
+        "react-hook-form": "^7.71.2",
+        "@hookform/resolvers": "^5.2.2",
+        "zod": "^3.25.76"
+      },
+      "requires": [],
+      "enhancedBy": ["auth"],
+      "providerChain": null,
+      "routes": []
+    },
+    "security": {
+      "displayName": "Security",
+      "description": "Biometric authentication, encrypted key-value store, app-lock, and SSL pinning config",
+      "category": "infrastructure",
+      "providers": {},
+      "sharedFiles": [
+        "src/features/security/config/pinning.ts",
+        "src/features/security/hooks/use-app-lock.ts",
+        "src/features/security/hooks/use-biometrics.ts",
+        "src/features/security/hooks/use-secure-storage.ts",
+        "src/features/security/index.ts",
+        "src/features/security/security-provider.tsx",
+        "src/features/security/utils/secure-auth-storage.ts",
+        "src/features/security/__tests__/use-app-lock.test.ts",
+        "src/features/security/__tests__/use-biometrics.test.ts",
+        "src/features/security/__tests__/use-secure-storage.test.ts"
+      ],
+      "sharedDependencies": {
+        "expo-local-authentication": "^55.0.9",
+        "expo-secure-store": "^55.0.9"
+      },
+      "requires": [],
+      "enhancedBy": ["auth"],
+      "providerChain": {
+        "component": "SecurityProvider",
+        "import": "@/features/security",
+        "order": 45
+      },
+      "routes": []
+    },
+    "theme": {
+      "displayName": "Theme",
+      "description": "Design token system with light/dark mode support and swappable theme presets",
+      "category": "ux",
+      "providers": {
+        "minimal": {
+          "files": [
+            "src/features/theme/presets/minimal.ts"
+          ],
+          "dependencies": {},
+          "envVars": {
+            "required": [],
+            "optional": []
+          }
+        },
+        "bold": {
+          "files": [
+            "src/features/theme/presets/bold.ts"
+          ],
+          "dependencies": {},
+          "envVars": {
+            "required": [],
+            "optional": []
+          }
+        },
+        "corporate": {
+          "files": [
+            "src/features/theme/presets/corporate.ts"
+          ],
+          "dependencies": {},
+          "envVars": {
+            "required": [],
+            "optional": []
+          }
+        }
+      },
+      "sharedFiles": [
+        "src/features/theme/hooks/use-theme.ts",
+        "src/features/theme/index.ts",
+        "src/features/theme/theme-provider.tsx",
+        "src/features/theme/utils/generate-tailwind.ts",
+        "src/features/theme/__tests__/generate-tailwind.test.ts",
+        "src/features/theme/__tests__/use-theme.test.ts"
+      ],
+      "sharedDependencies": {},
+      "requires": [],
+      "enhancedBy": [],
+      "providerChain": {
+        "component": "BasekitThemeProvider",
+        "import": "@/features/theme",
+        "order": 20
+      },
+      "routes": []
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react';
 import type { NotificationService } from '@/services/notifications.interface';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 import { createNotificationService } from './create-notification-service';
 
 export const NotificationContext = createContext<NotificationService | null>(null);
@@ -22,7 +22,7 @@ function NotificationProviderInner({ children }: { children: React.ReactNode }) 
 }
 
 export function NotificationProvider({ children }: { children: React.ReactNode }) {
-  if (!starterConfig.features.notifications.enabled) {
+  if (!basekitConfig.features.notifications.enabled) {
     return <>{children}</>;
   }
 

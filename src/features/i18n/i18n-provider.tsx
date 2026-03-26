@@ -1,10 +1,10 @@
 import React from 'react';
 import { I18nextProvider } from 'react-i18next';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 import i18next from './i18n';
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
-  if (!starterConfig.features.i18n.enabled) {
+  if (!basekitConfig.features.i18n.enabled) {
     return <>{children}</>;
   }
 

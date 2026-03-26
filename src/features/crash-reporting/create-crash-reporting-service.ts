@@ -1,5 +1,5 @@
 import type { CrashReportingService } from '@/services/crash-reporting.interface';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 import { noOpCrashReporting } from './no-op-crash-reporting';
 
 const providers: Record<string, () => Promise<CrashReportingService>> = {
@@ -10,11 +10,11 @@ const providers: Record<string, () => Promise<CrashReportingService>> = {
 };
 
 export async function createCrashReportingService(): Promise<CrashReportingService> {
-  if (!starterConfig.features.crashReporting.enabled) {
+  if (!basekitConfig.features.crashReporting.enabled) {
     return noOpCrashReporting;
   }
 
-  const { provider } = starterConfig.features.crashReporting;
+  const { provider } = basekitConfig.features.crashReporting;
   const factory = providers[provider];
   if (!factory) throw new Error(`Unknown crash reporting provider: ${provider}`);
 

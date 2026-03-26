@@ -1,15 +1,15 @@
 import * as Linking from 'expo-linking';
 import { renderHook } from '@testing-library/react-native';
 import { useDeepLink } from '../hooks/use-deep-link';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 
 jest.mock('expo-linking', () => ({
   getInitialURL: jest.fn().mockResolvedValue(null),
   addEventListener: jest.fn().mockReturnValue({ remove: jest.fn() }),
 }));
 
-jest.mock('@/config/starter.config', () => ({
-  starterConfig: {
+jest.mock('@/config/basekit.config', () => ({
+  basekitConfig: {
     app: { scheme: 'myapp' },
     features: { deepLinking: { enabled: true } },
   },
@@ -21,8 +21,8 @@ describe('buildDeepLink', () => {
   });
 
   it('constructs correct URL from config scheme', () => {
-    jest.mock('@/config/starter.config', () => ({
-      starterConfig: {
+    jest.mock('@/config/basekit.config', () => ({
+      basekitConfig: {
         app: { scheme: 'myapp' },
         features: { deepLinking: { enabled: true } },
       },
@@ -37,8 +37,8 @@ describe('buildDeepLink', () => {
   });
 
   it('handles path with leading slash', () => {
-    jest.mock('@/config/starter.config', () => ({
-      starterConfig: {
+    jest.mock('@/config/basekit.config', () => ({
+      basekitConfig: {
         app: { scheme: 'myapp' },
         features: { deepLinking: { enabled: true } },
       },
@@ -53,8 +53,8 @@ describe('buildDeepLink', () => {
   });
 
   it('handles path without leading slash', () => {
-    jest.mock('@/config/starter.config', () => ({
-      starterConfig: {
+    jest.mock('@/config/basekit.config', () => ({
+      basekitConfig: {
         app: { scheme: 'testapp' },
         features: { deepLinking: { enabled: true } },
       },
@@ -72,7 +72,7 @@ describe('buildDeepLink', () => {
 describe('useDeepLink', () => {
   const mockGetInitialURL = Linking.getInitialURL as jest.Mock;
   const mockAddEventListener = Linking.addEventListener as jest.Mock;
-  const mockConfig = starterConfig as { app: { scheme: string }; features: { deepLinking: { enabled: boolean } } };
+  const mockConfig = basekitConfig as { app: { scheme: string }; features: { deepLinking: { enabled: boolean } } };
 
   beforeEach(() => {
     jest.clearAllMocks();

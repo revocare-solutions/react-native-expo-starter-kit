@@ -15,8 +15,8 @@ jest.mock('axios', () => ({
   default: { create: mockCreate },
 }));
 
-jest.mock('@/config/starter.config', () => ({
-  starterConfig: {
+jest.mock('@/config/basekit.config', () => ({
+  basekitConfig: {
     api: { baseUrl: 'https://api.test.com', timeout: 5000 },
   },
 }));

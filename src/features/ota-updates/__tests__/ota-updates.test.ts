@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react-native';
 import { useOtaUpdates } from '../hooks/use-ota-updates';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 
 jest.mock(
   'expo-updates',
@@ -12,14 +12,14 @@ jest.mock(
   { virtual: true },
 );
 
-jest.mock('@/config/starter.config', () => ({
-  starterConfig: {
+jest.mock('@/config/basekit.config', () => ({
+  basekitConfig: {
     features: { otaUpdates: { enabled: true } },
   },
 }));
 
 describe('useOtaUpdates', () => {
-  const mockConfig = starterConfig as {
+  const mockConfig = basekitConfig as {
     features: { otaUpdates: { enabled: boolean } };
   };
 

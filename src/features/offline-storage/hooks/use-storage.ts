@@ -1,12 +1,12 @@
 import { useContext } from 'react';
 import { StorageContext } from '../storage-provider';
 import { noOpStorage } from '../no-op-storage';
-import { starterConfig } from '@/config/starter.config';
+import { basekitConfig } from '@/config/basekit.config';
 
 export function useStorage() {
   const storage = useContext(StorageContext);
 
-  if (!starterConfig.features.offlineStorage.enabled) {
+  if (!basekitConfig.features.offlineStorage.enabled) {
     return noOpStorage;
   }
 

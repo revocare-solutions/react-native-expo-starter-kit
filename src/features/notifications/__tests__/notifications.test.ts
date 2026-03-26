@@ -38,8 +38,8 @@ describe('createNotificationService', () => {
   });
 
   it('returns noOpNotifications when feature is disabled', async () => {
-    jest.mock('@/config/starter.config', () => ({
-      starterConfig: {
+    jest.mock('@/config/basekit.config', () => ({
+      basekitConfig: {
         features: {
           notifications: { enabled: false, provider: 'amplify' },
         },
@@ -58,8 +58,8 @@ describe('createNotificationService', () => {
   });
 
   it('throws for unknown provider', async () => {
-    jest.mock('@/config/starter.config', () => ({
-      starterConfig: {
+    jest.mock('@/config/basekit.config', () => ({
+      basekitConfig: {
         features: {
           notifications: {
             enabled: true,
@@ -79,8 +79,8 @@ describe('createNotificationService', () => {
   });
 
   it('returns noOpNotifications on provider failure', async () => {
-    jest.mock('@/config/starter.config', () => ({
-      starterConfig: {
+    jest.mock('@/config/basekit.config', () => ({
+      basekitConfig: {
         features: {
           notifications: { enabled: true, provider: 'amplify' },
         },

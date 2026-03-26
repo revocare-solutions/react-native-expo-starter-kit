@@ -32,8 +32,8 @@ describe('createStorageService', () => {
   });
 
   it('returns noOpStorage when feature is disabled', async () => {
-    jest.mock('@/config/starter.config', () => ({
-      starterConfig: {
+    jest.mock('@/config/basekit.config', () => ({
+      basekitConfig: {
         features: {
           offlineStorage: { enabled: false, provider: 'mmkv' },
         },
@@ -52,8 +52,8 @@ describe('createStorageService', () => {
   });
 
   it('throws for unknown provider', async () => {
-    jest.mock('@/config/starter.config', () => ({
-      starterConfig: {
+    jest.mock('@/config/basekit.config', () => ({
+      basekitConfig: {
         features: {
           offlineStorage: {
             enabled: true,

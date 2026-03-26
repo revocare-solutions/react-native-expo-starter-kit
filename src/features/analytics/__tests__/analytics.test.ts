@@ -28,8 +28,8 @@ describe('createAnalyticsService', () => {
   });
 
   it('returns noOpAnalytics when feature is disabled', async () => {
-    jest.mock('@/config/starter.config', () => ({
-      starterConfig: {
+    jest.mock('@/config/basekit.config', () => ({
+      basekitConfig: {
         features: {
           analytics: { enabled: false, provider: 'amplify' },
         },
@@ -48,8 +48,8 @@ describe('createAnalyticsService', () => {
   });
 
   it('throws for unknown provider', async () => {
-    jest.mock('@/config/starter.config', () => ({
-      starterConfig: {
+    jest.mock('@/config/basekit.config', () => ({
+      basekitConfig: {
         features: {
           analytics: {
             enabled: true,
@@ -69,8 +69,8 @@ describe('createAnalyticsService', () => {
   });
 
   it('returns noOpAnalytics on provider failure', async () => {
-    jest.mock('@/config/starter.config', () => ({
-      starterConfig: {
+    jest.mock('@/config/basekit.config', () => ({
+      basekitConfig: {
         features: {
           analytics: { enabled: true, provider: 'amplify' },
         },
