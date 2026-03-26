@@ -1,0 +1,124 @@
+import { resolveFeaturesToStrip, collectDepsToRemove, collectEnvVarsToKeep } from '../generator';
+
+const testManifest = {
+  features: {
+    auth: {
+      displayName: 'Authentication',
+      description: 'Auth',
+      category: 'auth',
+      providers: {
+        amplify: {
+          files: ['src/features/auth/providers/amplify.ts'],
+          dependencies: { 'aws-amplify': '^6.0.0' },
+          envVars: { required: ['EXPO_PUBLIC_COGNITO_USER_POOL_ID'], optional: [] },
+        },
+        firebase: {
+          files: ['src/features/auth/providers/firebase.ts'],
+          dependencies: { '@react-native-firebase/auth': '^21.0.0' },
+          envVars: { required: [], optional: [] },
+        },
+      },
+      sharedFiles: ['src/features/auth/'],
+      sharedDependencies: {},
+      requires: [],
+      enhancedBy: ['security'],
+      providerChain: { component: 'AuthProvider', import: '@/features/auth', order: 30 },
+      routes: ['src/app/(auth)/'],
+    },
+    analytics: {
+      displayName: 'Analytics',
+      description: 'Analytics',
+      category: 'analytics',
+      providers: {
+        amplify: {
+          files: ['src/features/analytics/providers/amplify.ts'],
+          dependencies: {},
+          envVars: { required: [], optional: [] },
+        },
+      },
+      sharedFiles: ['src/features/analytics/'],
+      sharedDependencies: {},
+      requires: [],
+      enhancedBy: [],
+      providerChain: { component: 'AnalyticsProvider', import: '@/features/analytics', order: 40 },
+      routes: [],
+    },
+  },
+  categories: {
+    auth: { exclusive: true, label: 'Authentication' },
+    analytics: { exclusive: true, label: 'Analytics' },
+  },
+};
+
+describe('resolveFeaturesToStrip', () => {
+  it('should return features not in selection', () => {
+    const selected = { auth: 'firebase' };
+    const result = resolveFeaturesToStrip(testManifest, selected);
+
+    expect(result.featuresToRemove).toContain('analytics');
+    expect(result.featuresToRemove).not.toContain('auth');
+  });
+
+  it('should identify provider files to remove for selected features', () => {
+    const selected = { auth: 'firebase' };
+    const result = resolveFeaturesToStrip(testManifest, selected);
+
+    expect(result.providerFilesToRemove).toContain('src/features/auth/providers/amplify.ts');
+    expect(result.providerFilesToRemove).not.toContain('src/features/auth/providers/firebase.ts');
+  });
+
+  it('should collect routes from removed features', () => {
+    const selected = { analytics: 'amplify' };
+    const result = resolveFeaturesToStrip(testManifest, selected);
+
+    expect(result.routesToRemove).toContain('src/app/(auth)/');
+  });
+
+  it('should collect all files from removed features', () => {
+    const selected = { auth: 'amplify' };
+    const result = resolveFeaturesToStrip(testManifest, selected);
+
+    expect(result.filesToRemove).toContain('src/features/analytics/');
+    expect(result.filesToRemove).toContain('src/features/analytics/providers/amplify.ts');
+  });
+});
+
+describe('collectDepsToRemove', () => {
+  it('should collect deps from removed features', () => {
+    const result = collectDepsToRemove(testManifest, ['analytics'], {});
+    // analytics has no provider-specific deps in this test manifest, but the function should not crash
+    expect(Array.isArray(result)).toBe(true);
+  });
+
+  it('should collect deps from removed providers', () => {
+    const removedProviderDeps: Record<string, boolean> = { 'aws-amplify': true };
+    const result = collectDepsToRemove(testManifest, [], removedProviderDeps);
+
+    expect(result).toContain('aws-amplify');
+  });
+
+  it('should combine feature and provider deps without duplicates', () => {
+    const removedProviderDeps: Record<string, boolean> = { 'aws-amplify': true };
+    const result = collectDepsToRemove(testManifest, ['auth'], removedProviderDeps);
+
+    // aws-amplify should appear only once even though it's from both sources
+    expect(result.filter((d) => d === 'aws-amplify').length).toBe(1);
+  });
+});
+
+describe('collectEnvVarsToKeep', () => {
+  it('should keep env vars for selected features and providers', () => {
+    const selected = { auth: 'amplify' };
+    const result = collectEnvVarsToKeep(testManifest, selected);
+
+    expect(result).toContain('EXPO_PUBLIC_COGNITO_USER_POOL_ID');
+    expect(result).toContain('EXPO_PUBLIC_API_URL');
+  });
+
+  it('should not keep env vars for unselected providers', () => {
+    const selected = { auth: 'firebase' };
+    const result = collectEnvVarsToKeep(testManifest, selected);
+
+    expect(result).not.toContain('EXPO_PUBLIC_COGNITO_USER_POOL_ID');
+  });
+});
