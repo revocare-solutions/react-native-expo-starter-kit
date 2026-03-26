@@ -63,21 +63,38 @@ export function collectDepsToRemove(
   manifest: Manifest,
   removedFeatures: string[],
   removedProviderDeps: Record<string, boolean>,
+  selectedFeatures: Record<string, string>,
 ): string[] {
-  const depsToRemove: string[] = [];
-
-  for (const featureName of removedFeatures) {
+  // Collect deps that selected features still need
+  const keptDeps = new Set<string>();
+  for (const [featureName, selectedProvider] of Object.entries(selectedFeatures)) {
     const feature = manifest.features[featureName];
     if (!feature) continue;
-    depsToRemove.push(...Object.keys(feature.sharedDependencies));
-    for (const provider of Object.values(feature.providers)) {
-      depsToRemove.push(...Object.keys(provider.dependencies));
+    for (const dep of Object.keys(feature.sharedDependencies)) {
+      keptDeps.add(dep);
+    }
+    const provider = feature.providers[selectedProvider];
+    if (provider) {
+      for (const dep of Object.keys(provider.dependencies)) {
+        keptDeps.add(dep);
+      }
     }
   }
 
-  depsToRemove.push(...Object.keys(removedProviderDeps));
+  // Collect deps from removed features and providers
+  const candidates: string[] = [];
+  for (const featureName of removedFeatures) {
+    const feature = manifest.features[featureName];
+    if (!feature) continue;
+    candidates.push(...Object.keys(feature.sharedDependencies));
+    for (const provider of Object.values(feature.providers)) {
+      candidates.push(...Object.keys(provider.dependencies));
+    }
+  }
+  candidates.push(...Object.keys(removedProviderDeps));
 
-  return [...new Set(depsToRemove)];
+  // Only remove deps that are NOT needed by any selected feature
+  return [...new Set(candidates)].filter((dep) => !keptDeps.has(dep));
 }
 
 export function collectEnvVarsToKeep(
