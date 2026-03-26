@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { createZustandMMKVStorage } from './mmkv-storage-middleware';
+import { createZustandStorage } from './storage-middleware';
 
 interface AppState {
   hasCompletedOnboarding: boolean;
@@ -19,7 +19,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'app-store',
-      storage: createJSONStorage(() => createZustandMMKVStorage()),
+      storage: createJSONStorage(() => createZustandStorage()),
     },
   ),
 );

@@ -178,6 +178,10 @@ async function main() {
     ...stripResult.providerFilesToRemove,
     ...stripResult.routesToRemove,
   ];
+  // Also remove Amplify config directory if no feature uses Amplify
+  if (!needsAmplify) {
+    allFilesToRemove.push('src/lib/amplify/');
+  }
   await removeFeatureFiles(PROJECT_ROOT, allFilesToRemove);
   s.stop(color.green(`Removed ${stripResult.featuresToRemove.length} features`));
 
