@@ -13,7 +13,7 @@ cd my-app
 pnpm install
 
 # Run the setup wizard
-pnpm setup
+pnpm run setup
 
 # Start developing
 pnpm start
@@ -24,10 +24,10 @@ The setup wizard asks you to pick a theme preset, backend provider, and features
 ### Setup Modes
 
 ```bash
-pnpm setup                          # Interactive wizard
-pnpm setup --quick                  # Sensible defaults (minimal theme, no backend, storage + i18n + forms)
-pnpm setup --from basekit.scaffold.yaml   # Reproducible setup from config file
-pnpm setup --dry-run --quick        # Preview what would change without modifying files
+pnpm run setup                          # Interactive wizard
+pnpm run setup --quick                  # Sensible defaults (minimal theme, no backend, storage + i18n + forms)
+pnpm run setup --from basekit.scaffold.yaml   # Reproducible setup from config file
+pnpm run setup --dry-run --quick        # Preview what would change without modifying files
 ```
 
 ## Feature Matrix
@@ -119,7 +119,7 @@ packageManager: pnpm
 ```
 
 ```bash
-pnpm setup --from basekit.scaffold.yaml
+pnpm run setup --from basekit.scaffold.yaml
 ```
 
 ## Project Structure
@@ -159,7 +159,7 @@ basekit.manifest.json  # Feature metadata (used by setup wizard)
 
 | Script | Description |
 | --- | --- |
-| `pnpm setup` | Run the interactive setup wizard |
+| `pnpm run setup` | Run the interactive setup wizard |
 | `pnpm start` | Start the Expo dev server |
 | `pnpm android` | Launch on Android emulator |
 | `pnpm ios` | Launch on iOS simulator |
