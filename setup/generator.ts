@@ -43,9 +43,10 @@ export function resolveFeaturesToStrip(
       featuresToRemove.push(featureName);
       // Delete the entire feature directory instead of individual files
       filesToRemove.push(`src/features/${featureName}/`);
-      // Also remove related service interface and types files
+      // Also remove related service interface, types, and docs files
       filesToRemove.push(`src/services/${featureName}.interface.ts`);
       filesToRemove.push(`src/types/${featureName}.types.ts`);
+      filesToRemove.push(`docs/features/${featureName}.md`);
       routesToRemove.push(...feature.routes);
     } else {
       const selectedProvider = selectedFeatures[featureName];
