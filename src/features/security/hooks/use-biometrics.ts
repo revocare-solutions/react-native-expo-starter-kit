@@ -34,7 +34,7 @@ export function useBiometrics() {
       const result = await LocalAuthentication.authenticateAsync({
         promptMessage: options?.promptMessage,
         cancelLabel: options?.cancelLabel,
-        fallbackEnabled: options?.fallbackToPasscode,
+        disableDeviceFallback: !options?.fallbackToPasscode,
       });
 
       if (result.success) {
