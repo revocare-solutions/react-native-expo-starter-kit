@@ -178,15 +178,13 @@ async function main() {
     const removedProviders = Object.keys(feature.providers).filter((p) => p !== selectedProvider);
     if (removedProviders.length === 0) continue;
 
-    // Find the create-*-service.ts file in the feature directory
-    const featureDir = feature.sharedFiles.find((f) => f.endsWith('/'));
-    if (!featureDir) continue;
-
-    const factoryFiles = await fs.readdir(path.join(PROJECT_ROOT, featureDir)).catch(() => []);
-    const factoryFile = (factoryFiles as string[]).find((f) => f.startsWith('create-') && f.endsWith('-service.ts'));
+    // Find the create-*-service.ts file from sharedFiles
+    const factoryFile = feature.sharedFiles.find(
+      (f) => f.includes('create-') && f.endsWith('-service.ts'),
+    );
     if (factoryFile) {
       await rewriteServiceFactory(
-        path.join(PROJECT_ROOT, featureDir, factoryFile),
+        path.join(PROJECT_ROOT, factoryFile),
         removedProviders,
       );
     }
