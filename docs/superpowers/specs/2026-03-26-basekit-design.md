@@ -719,3 +719,60 @@ Each overlay includes `__tests__/` with unit tests. The generated app inherits:
 - Templates are **bundled** into the CLI package (not fetched remotely) for offline support and version consistency
 - CLI version is pinned in the generated project's `basekit.lock.json` for reproducibility
 - Updates: `npm update @basekit/cli` to get new overlays and fixes
+
+---
+
+## 15. API Configuration & Backend Integration
+
+### API Config in Base Template
+
+The base template includes API client setup in `basekit.config.ts`:
+
+```typescript
+api: {
+  baseUrl: process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3000',
+  timeout: 30000,
+}
+```
+
+This powers the pre-configured Axios client (`src/lib/api/client.ts`) with auth token interceptor. All overlays that make API calls use this shared client.
+
+### Relationship to Backend Design
+
+The existing backend design spec (`docs/superpowers/specs/2026-03-13-starter-kit-backend-design.md`) describes a Spring Boot backend with Cognito JWT auth, user profiles, translations, analytics, and notification endpoints. The `auth-custom` overlay is designed to work with this backend and any REST/GraphQL API that follows standard JWT/OAuth patterns.
+
+When a developer selects the "Custom" backend option during scaffolding:
+- `auth-custom` overlay provides JWT token management, refresh interceptor, and configurable auth endpoints
+- The API client is pre-configured with the `baseUrl` from environment variables
+- Endpoint paths are configurable in the overlay's config, not hardcoded
+
+### `basekit.config.ts` Runtime Shape
+
+```typescript
+interface BasekitConfig {
+  app: {
+    name: string
+    bundleId: string
+    scheme: string
+  }
+  features: {
+    auth: { enabled: boolean; provider: string }
+    analytics: { enabled: boolean; provider: string }
+    crashReporting: { enabled: boolean; provider: string }
+    notifications: { enabled: boolean; provider: string }
+    i18n: { enabled: boolean; defaultLocale: string }
+    offlineStorage: { enabled: boolean; provider: string }
+    onboarding: { enabled: boolean }
+    otaUpdates: { enabled: boolean }
+    deepLinking: { enabled: boolean }
+    splashAppIcon: { enabled: boolean }
+    forms: { enabled: boolean }
+    security: { enabled: boolean }
+    payments: { enabled: boolean; provider: string }
+    theme: { enabled: boolean; preset: string }
+  }
+  api: {
+    baseUrl: string
+    timeout: number
+  }
+}
