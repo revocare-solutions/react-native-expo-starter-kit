@@ -48,6 +48,9 @@ app-example
 # Claude Code local settings
 .claude/settings.local.json
 
+# overmind
+.overmind.sock
+
 # generated native folders
 /ios
 /android
