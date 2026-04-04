@@ -1,0 +1,13 @@
+services:
+  inbucket:
+    image: inbucket/inbucket:latest
+    ports:
+      - "9000:9000"   # Web UI
+      - "2500:2500"   # SMTP
+    environment:
+      INBUCKET_SMTP_DEFAULTACCEPT: "true"
+      INBUCKET_STORAGE_TYPE: memory
+
+networks:
+  default:
+    name: infra

@@ -10,6 +10,8 @@ const noOpAuthContext: AuthContextValue = {
   signOut: async () => {},
   resetPassword: async () => {},
   confirmResetPassword: async () => {},
+  verifyEmail: async () => ({ success: false }),
+  resendVerificationEmail: async () => {},
   getSession: async () => null,
 };
 

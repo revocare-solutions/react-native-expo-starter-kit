@@ -97,6 +97,24 @@ function AuthProviderInner({ children }: { children: React.ReactNode }) {
     [],
   );
 
+  const verifyEmail = useCallback(async (email: string, token: string): Promise<AuthResult> => {
+    const service = serviceRef.current;
+    if (!service) return { success: false, error: 'Auth service not initialized' };
+
+    const result = await service.verifyEmail(email, token);
+    if (result.success && result.user) {
+      setUser(result.user);
+    }
+    return result;
+  }, []);
+
+  const resendVerificationEmail = useCallback(async (email: string): Promise<void> => {
+    const service = serviceRef.current;
+    if (!service) return;
+
+    await service.resendVerificationEmail(email);
+  }, []);
+
   const getSession = useCallback(async (): Promise<Session | null> => {
     const service = serviceRef.current;
     if (!service) return null;
@@ -113,9 +131,11 @@ function AuthProviderInner({ children }: { children: React.ReactNode }) {
       signOut,
       resetPassword,
       confirmResetPassword,
+      verifyEmail,
+      resendVerificationEmail,
       getSession,
     }),
-    [user, isLoading, signIn, signUp, signOut, resetPassword, confirmResetPassword, getSession],
+    [user, isLoading, signIn, signUp, signOut, resetPassword, confirmResetPassword, verifyEmail, resendVerificationEmail, getSession],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

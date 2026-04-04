@@ -23,7 +23,7 @@ services:
       GOTRUE_API_HOST: 0.0.0.0
       GOTRUE_API_PORT: 9999
       API_EXTERNAL_URL: http://localhost:9999
-      GOTRUE_SITE_URL: http://localhost:3000
+      GOTRUE_SITE_URL: http://localhost:8090
       GOTRUE_URI_ALLOW_LIST: ""
       GOTRUE_JWT_SECRET: super-secret-jwt-token-with-at-least-32-characters-long
       GOTRUE_JWT_EXP: 3600
@@ -31,11 +31,16 @@ services:
       GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin:postgres@supabase-db:5432/supabase
       GOTRUE_DISABLE_SIGNUP: "false"
       GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
-      GOTRUE_MAILER_AUTOCONFIRM: "true"
+      GOTRUE_MAILER_AUTOCONFIRM: "false"
       GOTRUE_SMS_AUTOCONFIRM: "true"
+      # Inbucket SMTP (runs in infra/docker-compose.yml)
+      GOTRUE_SMTP_HOST: inbucket
+      GOTRUE_SMTP_PORT: 2500
+      GOTRUE_SMTP_ADMIN_EMAIL: admin@localhost
       GOTRUE_MAILER_URLPATHS_CONFIRMATION: "/verify"
       GOTRUE_MAILER_URLPATHS_RECOVERY: "/recover"
       GOTRUE_MAILER_URLPATHS_EMAIL_CHANGE: "/email-change"
+      GOTRUE_MAILER_OTP_EXP: 3600
     depends_on:
       supabase-db:
         condition: service_healthy
@@ -106,6 +111,11 @@ services:
         condition: service_started
       supabase-rest:
         condition: service_started
+
+networks:
+  default:
+    name: infra
+    external: true
 
 volumes:
   supabase-db-data:

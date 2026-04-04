@@ -143,6 +143,14 @@ export const amplifyAuthService: AuthService = {
     }
   },
 
+  async verifyEmail() {
+    return { success: false, error: 'Email verification not supported with Amplify provider' };
+  },
+
+  async resendVerificationEmail() {
+    console.warn('[auth:amplify] resendVerificationEmail not implemented');
+  },
+
   getCurrentUser: mapCurrentUser,
   getSession: mapSession,
 

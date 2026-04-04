@@ -20,7 +20,7 @@ const registerSchema = z
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 export default function RegisterScreen() {
-  const { signUp, signIn } = useAuth();
+  const { signUp } = useAuth();
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -37,13 +37,11 @@ export default function RegisterScreen() {
       const result = await signUp(data.email, data.password);
 
       if (result.success) {
-        // Auto-login after registration (email verification is disabled)
-        const loginResult = await signIn(data.email, data.password);
-        if (loginResult.success) {
-          router.replace('/(tabs)');
-        } else {
-          router.replace('/(auth)/login');
-        }
+        // Registration successful — navigate to email verification
+        router.push({
+          pathname: '/(auth)/confirm-email',
+          params: { email: data.email },
+        });
       } else {
         setError(result.error ?? 'Sign-up failed. Please try again.');
       }

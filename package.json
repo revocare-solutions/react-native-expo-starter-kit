@@ -16,9 +16,13 @@
     "typecheck": "tsc --noEmit",
     "test:e2e": "maestro test e2e/.maestro/",
     "test:e2e:web": "npx playwright test --config=e2e/playwright/playwright.config.ts",
-    "supabase:up": "docker compose -f supabase/docker-compose.yml up -d",
+    "infra:up": "docker compose -f infra/docker-compose.yml up -d",
+    "infra:down": "docker compose -f infra/docker-compose.yml down",
+    "supabase:up": "pnpm infra:up && docker compose -f supabase/docker-compose.yml up -d",
     "supabase:down": "docker compose -f supabase/docker-compose.yml down",
-    "supabase:reset": "docker compose -f supabase/docker-compose.yml down -v && docker compose -f supabase/docker-compose.yml up -d"
+    "supabase:reset": "docker compose -f supabase/docker-compose.yml down -v && pnpm supabase:up",
+    "dev:up": "pnpm infra:up && pnpm supabase:up",
+    "dev:down": "pnpm supabase:down && pnpm infra:down"
   },
   "dependencies": {
     "@aws-amplify/react-native": "^1.3.3",
