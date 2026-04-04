@@ -3,19 +3,26 @@ import type { StorageService } from '@/services/storage.interface';
 import type { StorageValue } from '@/types';
 
 const cache = new Map<string, string>();
-let initialized = false;
+let hydratePromise: Promise<void> | null = null;
 
-async function hydrate() {
-  if (initialized) return;
-  const keys = await AsyncStorage.getAllKeys();
-  const entries = await AsyncStorage.getMany(keys);
-  Object.entries(entries).forEach(([key, value]) => {
-    if (value !== null) cache.set(key, value);
-  });
-  initialized = true;
+function hydrate(): Promise<void> {
+  if (hydratePromise) return hydratePromise;
+  hydratePromise = (async () => {
+    const keys = await AsyncStorage.getAllKeys();
+    const entries = await AsyncStorage.getMany(keys);
+    for (const [key, value] of Object.entries(entries)) {
+      if (value !== null) cache.set(key, value);
+    }
+  })();
+  return hydratePromise;
 }
 
-export const asyncStorageService: StorageService = {
+export async function createAsyncStorageService(): Promise<StorageService> {
+  await hydrate();
+  return asyncStorageService;
+}
+
+const asyncStorageService: StorageService = {
   get<T extends StorageValue>(key: string): T | null {
     const value = cache.get(key);
     if (value === undefined) return null;
@@ -51,4 +58,4 @@ export const asyncStorageService: StorageService = {
   },
 };
 
-export { hydrate as hydrateAsyncStorage };
+export { asyncStorageService };

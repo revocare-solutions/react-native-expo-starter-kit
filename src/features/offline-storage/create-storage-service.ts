@@ -4,8 +4,10 @@ import { noOpStorage } from './no-op-storage';
 
 const providers: Record<string, () => Promise<StorageService>> = {
   mmkv: () => import('./providers/mmkv').then((m) => m.mmkvStorageService),
-  'async-storage': () =>
-    import('./providers/async-storage').then((m) => m.asyncStorageService),
+  'async-storage': async () => {
+    const m = await import('./providers/async-storage');
+    return m.createAsyncStorageService();
+  },
 };
 
 export async function createStorageService(): Promise<StorageService> {

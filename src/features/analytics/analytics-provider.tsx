@@ -12,8 +12,6 @@ function AnalyticsProviderInner({ children }: { children: React.ReactNode }) {
     createAnalyticsService().then(setService);
   }, []);
 
-  if (!service) return null;
-
   return (
     <AnalyticsContext.Provider value={service}>
       {children}

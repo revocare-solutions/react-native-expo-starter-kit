@@ -12,8 +12,6 @@ function CrashReportingProviderInner({ children }: { children: React.ReactNode }
     createCrashReportingService().then(setService);
   }, []);
 
-  if (!service) return null;
-
   return (
     <CrashReportingContext.Provider value={service}>
       {children}
