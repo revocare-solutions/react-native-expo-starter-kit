@@ -113,23 +113,30 @@ jobs:
 
       - name: Start Kong API Gateway
         run: |
+          sed 's/supabase-auth:9999/localhost:9999/g; s/supabase-rest:3000/localhost:3000/g; s/supabase-meta:8080/localhost:8080/g' \
+            supabase/kong.yml > /tmp/kong-ci.yml
           docker run -d --name supabase-kong \
             --network host \
             -e KONG_DATABASE=off \
             -e "KONG_DECLARATIVE_CONFIG=/tmp/kong.yml" \
             -e KONG_DNS_ORDER=LAST,A,CNAME \
             -e "KONG_PLUGINS=request-transformer,cors,key-auth,acl,basic-auth" \
-            -v ${{ github.workspace }}/supabase/kong.yml:/tmp/kong.yml:ro \
+            -v /tmp/kong-ci.yml:/tmp/kong.yml:ro \
             kong:2.8.1
 
       - name: Wait for services
         run: |
           for i in $(seq 1 30); do
-            curl -sf http://localhost:8000/auth/v1/health && break
-            echo "Waiting for Supabase auth..."
+            if curl -sf http://localhost:8000/auth/v1/health > /dev/null 2>&1; then
+              echo "Supabase auth ready"
+              break
+            fi
+            echo "Waiting for Supabase auth... ($i/30)"
             sleep 2
           done
-          curl -sf http://localhost:9000 > /dev/null && echo "Inbucket ready"
+          curl -sf http://localhost:8000/auth/v1/health > /dev/null || { echo "ERROR: Supabase auth not ready"; exit 1; }
+          curl -sf http://localhost:9000 > /dev/null || { echo "ERROR: Inbucket not ready"; exit 1; }
+          echo "All services ready"
 
       - name: Create .env for client app
         run: |
