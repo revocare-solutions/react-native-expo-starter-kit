@@ -35,6 +35,7 @@ yarn-error.*
 
 # local env files
 .env
+apps/*/.env
 .env.staging
 .env.production
 .env*.local
