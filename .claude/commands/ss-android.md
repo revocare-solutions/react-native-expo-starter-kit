@@ -1,6 +1,8 @@
-Take a screenshot from the connected Android device via ADB and display it.
+Take a screenshot from the connected Android device via ADB and copy it to the macOS clipboard.
 
-Steps:
-1. Run `adb exec-out screencap -p > /tmp/android-screenshot.png`
-2. Read and display the image at `/tmp/android-screenshot.png`
-3. Describe what you see on screen
+Run this command:
+```
+adb exec-out screencap -p > /tmp/sc.png && osascript -e 'set the clipboard to (read (POSIX file "/tmp/sc.png") as TIFF picture)' && rm /tmp/sc.png
+```
+
+Tell the user the screenshot is copied to their clipboard and they can Cmd+V to paste it anywhere.
