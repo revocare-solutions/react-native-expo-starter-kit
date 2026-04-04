@@ -33,30 +33,17 @@ services:
       GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
       GOTRUE_MAILER_AUTOCONFIRM: "false"
       GOTRUE_SMS_AUTOCONFIRM: "true"
-      # Inbucket SMTP configuration
+      # Inbucket SMTP (runs in infra/docker-compose.yml)
       GOTRUE_SMTP_HOST: inbucket
       GOTRUE_SMTP_PORT: 2500
       GOTRUE_SMTP_ADMIN_EMAIL: admin@localhost
       GOTRUE_MAILER_URLPATHS_CONFIRMATION: "/verify"
       GOTRUE_MAILER_URLPATHS_RECOVERY: "/recover"
       GOTRUE_MAILER_URLPATHS_EMAIL_CHANGE: "/email-change"
-      # Use OTP type for mobile-friendly verification
       GOTRUE_MAILER_OTP_EXP: 3600
     depends_on:
       supabase-db:
         condition: service_healthy
-      inbucket:
-        condition: service_started
-
-  inbucket:
-    image: inbucket/inbucket:latest
-    ports:
-      - "9000:9000"   # Web UI
-      - "2500:2500"   # SMTP
-      - "1100:1100"   # REST API
-    environment:
-      INBUCKET_SMTP_DEFAULTACCEPT: "true"
-      INBUCKET_STORAGE_TYPE: memory
 
   supabase-rest:
     image: postgrest/postgrest:v12.2.3
@@ -124,6 +111,11 @@ services:
         condition: service_started
       supabase-rest:
         condition: service_started
+
+networks:
+  default:
+    name: infra
+    external: true
 
 volumes:
   supabase-db-data:
