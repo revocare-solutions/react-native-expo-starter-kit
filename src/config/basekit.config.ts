@@ -19,6 +19,7 @@ export interface BasekitConfig {
     security: { enabled: boolean };
     theme: { enabled: boolean; preset: 'minimal' | 'bold' | 'corporate' };
   };
+  env: 'development' | 'staging' | 'production';
   api: {
     baseUrl: string | undefined;
     timeout: number;
@@ -47,6 +48,8 @@ export const basekitConfig: BasekitConfig = {
     security: { enabled: true },
     theme: { enabled: true, preset: 'minimal' },
   },
+
+  env: (process.env.EXPO_PUBLIC_APP_ENV as 'development' | 'staging' | 'production') ?? 'development',
 
   api: {
     baseUrl: process.env.EXPO_PUBLIC_API_URL,

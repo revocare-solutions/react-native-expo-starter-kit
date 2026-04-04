@@ -30,8 +30,13 @@ yarn-error.*
 .DS_Store
 *.pem
 
+# playwright artifacts
+.playwright-mcp/
+
 # local env files
 .env
+.env.staging
+.env.production
 .env*.local
 
 # typescript
@@ -46,3 +51,7 @@ app-example
 /ios
 /android
 output.css
+
+# screenshots
+/home-*.png
+/screenshot*.png
