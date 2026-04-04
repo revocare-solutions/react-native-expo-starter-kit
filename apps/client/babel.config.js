@@ -11,9 +11,9 @@ module.exports = function (api) {
         {
           root: ["./"],
           alias: {
-            "@": "./packages/shared/src",
-            "@app": "./apps/client/src",
-            "@assets": "./apps/client/assets"
+            "@": "../../packages/shared/src",
+            "@app": "./src",
+            "@assets": "./assets"
           },
           extensions: [".tsx", ".ts", ".js", ".json"]
         }

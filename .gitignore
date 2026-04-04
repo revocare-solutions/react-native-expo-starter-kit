@@ -35,6 +35,7 @@ yarn-error.*
 
 # local env files
 .env
+apps/*/.env
 .env.staging
 .env.production
 .env*.local
@@ -46,6 +47,9 @@ app-example
 
 # Claude Code local settings
 .claude/settings.local.json
+
+# overmind
+.overmind.sock
 
 # generated native folders
 /ios
