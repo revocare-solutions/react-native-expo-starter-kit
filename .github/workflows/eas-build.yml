@@ -44,5 +44,9 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
+      - name: Run Expo Doctor
+        run: npx expo-doctor
+        continue-on-error: true
+
       - name: Build
         run: eas build --platform ${{ inputs.platform }} --profile ${{ inputs.profile }} --non-interactive
