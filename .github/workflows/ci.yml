@@ -29,5 +29,130 @@ jobs:
       - name: Type check
         run: pnpm typecheck
 
-      - name: Test
-        run: pnpm test --ci --coverage
+      - name: Test with coverage
+        run: pnpm test --ci --coverage --coverageReporters=json-summary --coverageReporters=text
+
+      - name: Coverage summary
+        if: github.event_name == 'pull_request'
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          json-summary-path: coverage/coverage-summary.json
+          file-coverage-mode: changes
+        continue-on-error: true
+
+  e2e:
+    name: E2E Tests (Playwright)
+    runs-on: ubuntu-latest
+    needs: quality
+    services:
+      supabase-db:
+        image: supabase/postgres:15.8.1.060
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: supabase
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U supabase_admin"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright
+        run: npx playwright install chromium
+
+      - name: Set up Supabase auth roles
+        run: |
+          PGPASSWORD=postgres psql -h localhost -U supabase_admin -d supabase -c "
+            ALTER ROLE supabase_auth_admin WITH PASSWORD 'postgres' LOGIN;
+            ALTER ROLE authenticator WITH PASSWORD 'postgres' LOGIN;
+          "
+
+      - name: Start Supabase Auth
+        run: |
+          docker run -d --name supabase-auth \
+            --network host \
+            -e GOTRUE_API_HOST=0.0.0.0 \
+            -e GOTRUE_API_PORT=9999 \
+            -e API_EXTERNAL_URL=http://localhost:9999 \
+            -e GOTRUE_SITE_URL=http://localhost:8090 \
+            -e GOTRUE_JWT_SECRET=super-secret-jwt-token-with-at-least-32-characters-long \
+            -e GOTRUE_JWT_EXP=3600 \
+            -e GOTRUE_DB_DRIVER=postgres \
+            -e "GOTRUE_DB_DATABASE_URL=postgres://supabase_auth_admin:postgres@localhost:5432/supabase" \
+            -e GOTRUE_DISABLE_SIGNUP=false \
+            -e GOTRUE_EXTERNAL_EMAIL_ENABLED=true \
+            -e GOTRUE_MAILER_AUTOCONFIRM=true \
+            supabase/gotrue:v2.170.0
+
+      - name: Start Kong API Gateway
+        run: |
+          docker run -d --name supabase-kong \
+            --network host \
+            -e KONG_DATABASE=off \
+            -e "KONG_DECLARATIVE_CONFIG=/tmp/kong.yml" \
+            -e KONG_DNS_ORDER=LAST,A,CNAME \
+            -e "KONG_PLUGINS=request-transformer,cors,key-auth,acl,basic-auth" \
+            -v ${{ github.workspace }}/supabase/kong.yml:/tmp/kong.yml:ro \
+            kong:2.8.1
+
+      - name: Wait for services
+        run: |
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:8000/auth/v1/health && break
+            echo "Waiting for Supabase auth..."
+            sleep 2
+          done
+
+      - name: Run Playwright tests
+        run: pnpm test:e2e:web
+        env:
+          EXPO_PUBLIC_APP_ENV: development
+          EXPO_PUBLIC_API_URL: http://localhost:8000
+          EXPO_PUBLIC_SUPABASE_URL: http://localhost:8000
+          EXPO_PUBLIC_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0
+
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results
+          path: test-results/
+          retention-days: 7
+
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Audit dependencies
+        run: pnpm audit --prod --audit-level=high
+        continue-on-error: true
+
+      - name: Check for known vulnerabilities
+        run: npx better-npm-audit audit --level high --production
+        continue-on-error: true
