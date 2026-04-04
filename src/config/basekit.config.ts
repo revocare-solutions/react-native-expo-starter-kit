@@ -5,7 +5,7 @@ export interface BasekitConfig {
     scheme: string;
   };
   features: {
-    auth: { enabled: boolean; provider: 'amplify' };
+    auth: { enabled: boolean; provider: 'amplify' | 'supabase' };
     analytics: { enabled: boolean; provider: 'amplify' };
     crashReporting: { enabled: boolean; provider: 'sentry' };
     notifications: { enabled: boolean; provider: 'amplify' };
@@ -33,7 +33,7 @@ export const basekitConfig: BasekitConfig = {
   },
 
   features: {
-    auth: { enabled: true, provider: 'amplify' },
+    auth: { enabled: true, provider: 'supabase' },
     analytics: { enabled: true, provider: 'amplify' },
     crashReporting: { enabled: true, provider: 'sentry' },
     notifications: { enabled: true, provider: 'amplify' },

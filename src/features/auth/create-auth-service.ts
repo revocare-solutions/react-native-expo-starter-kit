@@ -4,6 +4,7 @@ import { noOpAuth } from './no-op-auth';
 
 const providers: Record<string, () => Promise<AuthService>> = {
   amplify: () => import('./providers/amplify').then((m) => m.amplifyAuthService),
+  supabase: () => import('./providers/supabase').then((m) => m.supabaseAuthService),
 };
 
 export async function createAuthService(): Promise<AuthService> {
