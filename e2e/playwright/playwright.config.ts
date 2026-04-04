@@ -14,7 +14,7 @@ export default defineConfig({
     { name: 'chromium', use: { browserName: 'chromium' } },
   ],
   webServer: {
-    command: 'pnpm dev:client -- --web',
+    command: 'cd apps/client && npx expo start --web --port 8090',
     url: 'http://localhost:8090',
     reuseExistingServer: true,
     timeout: 60000,
