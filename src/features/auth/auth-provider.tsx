@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { basekitConfig } from '@/config/basekit.config';
-import { setAuthTokenGetter } from '@/lib/api';
+import { setAuthTokenGetter, setAuthExpiredHandler } from '@/lib/api';
 import type { AuthService } from '@/services/auth.interface';
 import type { AuthResult, User, Session } from '@/types';
 import { AuthContext, type AuthContextValue } from './auth-context';
@@ -22,6 +22,11 @@ function AuthProviderInner({ children }: { children: React.ReactNode }) {
       setAuthTokenGetter(async () => {
         const session = await service.getSession();
         return session?.accessToken ?? null;
+      });
+
+      // Handle expired auth (401 after token refresh fails)
+      setAuthExpiredHandler(() => {
+        setUser(null);
       });
 
       // Get initial user
