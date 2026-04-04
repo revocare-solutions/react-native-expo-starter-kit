@@ -9,6 +9,8 @@ export interface AuthContextValue {
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   confirmResetPassword: (email: string, code: string, newPassword: string) => Promise<void>;
+  verifyEmail: (email: string, token: string) => Promise<AuthResult>;
+  resendVerificationEmail: (email: string) => Promise<void>;
   getSession: () => Promise<Session | null>;
 }
 

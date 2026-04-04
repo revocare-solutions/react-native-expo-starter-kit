@@ -6,6 +6,8 @@ export const noOpAuth: AuthService = {
   signOut: async () => {},
   resetPassword: async () => {},
   confirmResetPassword: async () => {},
+  verifyEmail: async () => ({ success: false }),
+  resendVerificationEmail: async () => {},
   getCurrentUser: async () => null,
   getSession: async () => null,
   onAuthStateChange: () => () => {},

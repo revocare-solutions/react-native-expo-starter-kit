@@ -86,6 +86,41 @@ export const supabaseAuthService: AuthService = {
     }
   },
 
+  async verifyEmail(email: string, token: string) {
+    try {
+      const { data, error } = await supabase.auth.verifyOtp({
+        email,
+        token,
+        type: 'email',
+      });
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      if (data.user) {
+        return { success: true, user: mapUser(data.user) };
+      }
+
+      return { success: false, error: 'Verification failed' };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Verification failed',
+      };
+    }
+  },
+
+  async resendVerificationEmail(email: string) {
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email,
+    });
+    if (error) {
+      throw new Error(error.message);
+    }
+  },
+
   async getCurrentUser() {
     const { data: { user } } = await supabase.auth.getUser();
     return user ? mapUser(user) : null;

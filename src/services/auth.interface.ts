@@ -6,6 +6,8 @@ export interface AuthService {
   signOut(): Promise<void>;
   resetPassword(email: string): Promise<void>;
   confirmResetPassword(email: string, code: string, newPassword: string): Promise<void>;
+  verifyEmail(email: string, token: string): Promise<AuthResult>;
+  resendVerificationEmail(email: string): Promise<void>;
   getCurrentUser(): Promise<User | null>;
   getSession(): Promise<Session | null>;
   onAuthStateChange(callback: (user: User | null) => void): () => void;
