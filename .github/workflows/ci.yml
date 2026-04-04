@@ -133,12 +133,7 @@ jobs:
 
       - name: Create .env for client app
         run: |
-          cat > apps/client/.env << 'ENVEOF'
-          EXPO_PUBLIC_APP_ENV=development
-          EXPO_PUBLIC_API_URL=http://localhost:8000
-          EXPO_PUBLIC_SUPABASE_URL=http://localhost:8000
-          EXPO_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0
-          ENVEOF
+          printf 'EXPO_PUBLIC_APP_ENV=development\nEXPO_PUBLIC_API_URL=http://localhost:8000\nEXPO_PUBLIC_SUPABASE_URL=http://localhost:8000\nEXPO_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0\n' > apps/client/.env
 
       - name: Run Playwright tests
         run: pnpm test:e2e:web
