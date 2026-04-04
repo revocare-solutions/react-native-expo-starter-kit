@@ -12,8 +12,6 @@ function StorageProviderInner({ children }: { children: React.ReactNode }) {
     createStorageService().then(setStorage);
   }, []);
 
-  if (!storage) return null;
-
   return (
     <StorageContext.Provider value={storage}>
       {children}

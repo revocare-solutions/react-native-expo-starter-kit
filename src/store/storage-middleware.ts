@@ -48,19 +48,29 @@ function createAsyncStorageAdapter(): StateStorage {
   }
 }
 
+let cachedStorage: StateStorage | null = null;
+
 export function createZustandStorage(): StateStorage {
+  if (cachedStorage) return cachedStorage;
+
   if (!basekitConfig.features.offlineStorage?.enabled) {
-    return memoryStorage();
+    cachedStorage = memoryStorage();
+    return cachedStorage;
   }
 
   const provider = basekitConfig.features.offlineStorage?.provider;
 
   switch (provider) {
     case 'mmkv':
-      return createMMKVStorage();
+      cachedStorage = createMMKVStorage();
+      break;
     case 'async-storage':
-      return createAsyncStorageAdapter();
+      cachedStorage = createAsyncStorageAdapter();
+      break;
     default:
-      return createMMKVStorage();
+      cachedStorage = createMMKVStorage();
+      break;
   }
+
+  return cachedStorage;
 }

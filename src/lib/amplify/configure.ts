@@ -1,9 +1,14 @@
 import { basekitConfig } from '@/config/basekit.config';
 
-let configured = false;
+let configurePromise: Promise<void> | null = null;
 
-export async function configureAmplify(): Promise<void> {
-  if (configured) return;
+export function configureAmplify(): Promise<void> {
+  if (configurePromise) return configurePromise;
+  configurePromise = doConfigureAmplify();
+  return configurePromise;
+}
+
+async function doConfigureAmplify(): Promise<void> {
 
   const { features } = basekitConfig;
 
@@ -44,7 +49,6 @@ export async function configureAmplify(): Promise<void> {
       },
     });
 
-    configured = true;
   } catch (error) {
     console.warn(
       '[amplify] Failed to configure Amplify:',

@@ -5,10 +5,10 @@ export interface BasekitConfig {
     scheme: string;
   };
   features: {
-    auth: { enabled: boolean; provider: 'amplify' | 'firebase' | 'supabase' | 'clerk' };
-    analytics: { enabled: boolean; provider: 'amplify' | 'mixpanel' | 'segment' | 'posthog' };
-    crashReporting: { enabled: boolean; provider: 'sentry' | 'bugsnag' | 'datadog' };
-    notifications: { enabled: boolean; provider: 'amplify' | 'firebase' | 'onesignal' };
+    auth: { enabled: boolean; provider: 'amplify' };
+    analytics: { enabled: boolean; provider: 'amplify' };
+    crashReporting: { enabled: boolean; provider: 'sentry' };
+    notifications: { enabled: boolean; provider: 'amplify' };
     i18n: { enabled: boolean; defaultLocale: string };
     offlineStorage: { enabled: boolean; provider: 'mmkv' | 'async-storage' };
     onboarding: { enabled: boolean };

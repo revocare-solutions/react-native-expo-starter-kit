@@ -12,8 +12,6 @@ function NotificationProviderInner({ children }: { children: React.ReactNode }) 
     createNotificationService().then(setService);
   }, []);
 
-  if (!service) return null;
-
   return (
     <NotificationContext.Provider value={service}>
       {children}

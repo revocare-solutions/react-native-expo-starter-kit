@@ -35,13 +35,9 @@ function ThemeProviderInner({ children }: { children: React.ReactNode }) {
     setModeOverride(mode);
   };
 
-  if (!fontsLoaded) {
-    return null;
-  }
-
   return (
     <ThemeContext.Provider value={{ config: themeConfig, mode: resolvedMode, setMode }}>
-      {children}
+      {fontsLoaded ? children : null}
     </ThemeContext.Provider>
   );
 }
