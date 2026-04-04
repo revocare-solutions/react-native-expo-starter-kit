@@ -1,0 +1,22 @@
+appId: com.mycompany.myapp
+---
+- launchApp:
+    clearState: true
+
+# Should land on login screen
+- assertVisible: "Welcome Back"
+- assertVisible: "Sign in to your account"
+
+# Fill in credentials
+- tapOn: "you@example.com"
+- inputText: "test@example.com"
+- tapOn: "Enter your password"
+- inputText: "Test1234!"
+
+# Submit
+- tapOn: "Sign In"
+
+# Should navigate to home
+- assertVisible:
+    text: "Home"
+    timeout: 10000

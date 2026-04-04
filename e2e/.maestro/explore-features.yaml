@@ -1,0 +1,14 @@
+appId: com.mycompany.myapp
+---
+- launchApp
+
+# Navigate to Explore tab (user must be logged in)
+- tapOn: "Explore"
+- assertVisible: "Explore"
+
+# Verify feature sections are visible
+- assertVisible: "Features"
+- scrollDown
+
+# Verify core infrastructure section
+- assertVisible: "Core Infrastructure"

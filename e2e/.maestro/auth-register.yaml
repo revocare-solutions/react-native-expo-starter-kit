@@ -1,0 +1,29 @@
+appId: com.mycompany.myapp
+---
+- launchApp:
+    clearState: true
+
+# Should land on login screen
+- assertVisible: "Welcome Back"
+
+# Navigate to register
+- tapOn: "Sign Up"
+- assertVisible: "Create Account"
+
+# Fill in registration form
+- tapOn: "you@example.com"
+- inputText: "maestro-test@example.com"
+- tapOn: "At least 8 characters"
+- inputText: "Test1234!"
+- tapOn: "Re-enter your password"
+- inputText: "Test1234!"
+
+# Submit
+- tapOn:
+    text: "Create Account"
+    index: 1
+
+# Should auto-login and go to home
+- assertVisible:
+    text: "Home"
+    timeout: 15000
