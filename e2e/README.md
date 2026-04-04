@@ -1,47 +1,78 @@
-# E2E Testing with Maestro
+# E2E Testing
 
-This directory contains end-to-end test flows using [Maestro](https://maestro.mobile.dev/).
+Two testing strategies: **Maestro** for native device testing and **Playwright** for web browser testing.
 
-## Prerequisites
+## Maestro (Native)
 
-Install the Maestro CLI:
+Tests run on iOS Simulator or Android Emulator.
+
+### Prerequisites
 
 ```bash
-# macOS / Linux
 curl -Ls "https://get.maestro.mobile.dev" | bash
 ```
 
-For Windows, see the [Maestro installation docs](https://maestro.mobile.dev/getting-started/installing-maestro).
+### Running
 
-## Running Tests
+```bash
+# Start app on simulator/emulator
+pnpm start
 
-1. Start the dev server and run the app on a simulator/emulator:
+# Run all Maestro tests
+pnpm test:e2e
 
-   ```bash
-   pnpm start
-   ```
+# Run a specific flow
+maestro test e2e/.maestro/auth-login.yaml
+```
 
-2. Run all E2E tests:
-
-   ```bash
-   pnpm test:e2e
-   ```
-
-   Or run a specific flow:
-
-   ```bash
-   maestro test e2e/.maestro/app-launch.yaml
-   ```
-
-## Test Flows
+### Flows
 
 | Flow | Description |
 | --- | --- |
-| `app-launch.yaml` | Verifies the app launches and the Home screen is visible |
-| `tab-navigation.yaml` | Verifies switching between Home and Explore tabs |
+| `app-launch.yaml` | App launches and Home screen is visible |
+| `tab-navigation.yaml` | Switch between Home and Explore tabs |
+| `auth-login.yaml` | Login with email/password |
+| `auth-register.yaml` | Register and auto-login |
+| `auth-forgot-password.yaml` | Navigate to forgot password and back |
+| `explore-features.yaml` | Browse the Explore tab features |
+| `full-flow.yaml` | Complete user journey: auth screens → login → navigation |
+
+## Playwright (Web)
+
+Tests run in a headless Chromium browser — no simulator required. Great for CI.
+
+### Prerequisites
+
+```bash
+pnpm add -D @playwright/test
+npx playwright install chromium
+```
+
+### Running
+
+```bash
+# Start Supabase (if auth tests need it)
+pnpm supabase:up
+
+# Run all Playwright tests (auto-starts web server)
+pnpm test:e2e:web
+
+# Run with UI mode
+npx playwright test --config=e2e/playwright/playwright.config.ts --ui
+
+# Run a specific test file
+npx playwright test --config=e2e/playwright/playwright.config.ts e2e/playwright/auth.spec.ts
+```
+
+### Test Files
+
+| File | Description |
+| --- | --- |
+| `auth.spec.ts` | Login, register, forgot password, invalid credentials |
+| `navigation.spec.ts` | Tab navigation, home screen content |
+| `error-boundary.spec.ts` | App recovery from errors |
 
 ## Writing New Tests
 
-Add new `.yaml` flow files to `e2e/.maestro/`. They will be picked up automatically when running `pnpm test:e2e`.
-
-See the [Maestro docs](https://maestro.mobile.dev/) for the full flow file reference.
+- **Maestro**: Add `.yaml` files to `e2e/.maestro/` — auto-discovered by `pnpm test:e2e`
+- **Playwright**: Add `.spec.ts` files to `e2e/playwright/` — auto-discovered by `pnpm test:e2e:web`

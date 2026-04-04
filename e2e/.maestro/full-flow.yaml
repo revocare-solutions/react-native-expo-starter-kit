@@ -1,0 +1,45 @@
+appId: com.mycompany.myapp
+name: Full User Journey
+---
+- launchApp:
+    clearState: true
+
+# 1. Login screen should be visible
+- assertVisible: "Welcome Back"
+
+# 2. Navigate to register
+- tapOn: "Sign Up"
+- assertVisible: "Create Account"
+
+# 3. Go back to login
+- tapOn: "Back"
+- assertVisible: "Welcome Back"
+
+# 4. Navigate to forgot password
+- tapOn: "Forgot password?"
+- assertVisible: "Reset Password"
+
+# 5. Go back to login
+- tapOn: "Back"
+- assertVisible: "Welcome Back"
+
+# 6. Login with test credentials
+- tapOn: "you@example.com"
+- inputText: "test@example.com"
+- tapOn: "Enter your password"
+- inputText: "Test1234!"
+- tapOn: "Sign In"
+
+# 7. Home screen should load
+- assertVisible:
+    text: "Home"
+    timeout: 10000
+- assertVisible: "Starter Kit"
+
+# 8. Switch to Explore tab
+- tapOn: "Explore"
+- assertVisible: "Explore"
+
+# 9. Switch back to Home
+- tapOn: "Home"
+- assertVisible: "Starter Kit"
