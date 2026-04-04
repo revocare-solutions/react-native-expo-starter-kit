@@ -1,15 +1,14 @@
-version: "3.8"
-
 services:
   supabase-db:
     image: supabase/postgres:15.8.1.060
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: supabase
     volumes:
       - supabase-db-data:/var/lib/postgresql/data
+      - ./init/99-custom-roles.sql:/docker-entrypoint-initdb.d/init-scripts/99-custom-roles.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U supabase_admin"]
       interval: 5s
@@ -56,7 +55,7 @@ services:
         condition: service_healthy
 
   supabase-studio:
-    image: supabase/studio:20250113-83c4c07
+    image: supabase/studio:latest
     ports:
       - "3100:3000"
     environment:
