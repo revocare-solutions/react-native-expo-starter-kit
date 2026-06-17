@@ -4,23 +4,17 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "src/*"
-      ],
-      "@assets/*": [
-        "assets/*"
-      ]
+      "@/*": ["packages/shared/src/*"],
+      "@app/*": ["apps/client/src/*"],
+      "@assets/*": ["apps/client/assets/*"]
     },
-    "types": [
-      "nativewind/types",
-      "jest"
-    ]
+    "types": ["nativewind/types", "jest"]
   },
   "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts",
-    "nativewind-env.d.ts"
-  ]
+    "packages/**/*.ts",
+    "packages/**/*.tsx",
+    "apps/**/*.ts",
+    "apps/**/*.tsx"
+  ],
+  "exclude": ["node_modules"]
 }
